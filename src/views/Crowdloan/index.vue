@@ -220,7 +220,7 @@
               ref="extensionAccountSelect"
             >
               <el-option
-                class="nominate-dropdown-item"
+                class="contribute-dropdown-item"
                 v-for="item in extensionAccountList"
                 :key="item.address"
                 :label="item.address"
@@ -257,10 +257,10 @@
             </div>
             <el-input class="contribute-amount-input" size="small" v-model.trim="contributeAmount" :placeholder="$t('')" />
             <el-button
-              class="nominate-btn"
+              class="contribute-btn"
               :disabled="!checkedValidators.length || !isApiReady"
-              @click.stop="submitNominate()"
-              :loading="isNominateLoading"
+              @click.stop="submitContribute()"
+              :loading="isContributeLoading"
               >{{ $t("parachain.contribute") }}</el-button
             >
           </div>
@@ -320,7 +320,7 @@ export default {
       sortedParachain: [],
       isOnSearch: false,
       isBtnLoading: false,
-      isNominateLoading: false,
+      isContributeLoading: false,
       isApiReady: false,
       isStaking: false,
       contributeAmount: '',
@@ -555,8 +555,8 @@ export default {
         return new BN(0);
       }
     },
-    async submitNominate() {
-      this.isNominateLoading = true;
+    async submitContribute() {
+      this.isContributeLoading = true;
       let self = this;
       try {
         const injector = await web3FromAddress(this.signer);
@@ -576,7 +576,7 @@ export default {
                 if (status.isFinalized) {
                   unsub && unsub();
                 }
-                this.isNominateLoading = false;
+                this.isContributeLoading = false;
               }
               if (method === "ExtrinsicFailed" && section === "system") {
                 self.$notify({
@@ -584,14 +584,14 @@ export default {
                   message: this.$t("transaction_failed_content"),
                   type: "error",
                 });
-                this.isNominateLoading = false;
+                this.isContributeLoading = false;
               }
             });
             // }
           });
       } catch (e) {
         console.log(e);
-        this.isNominateLoading = false;
+        this.isContributeLoading = false;
       }
     },
     selectedListChange(value) {
@@ -607,7 +607,6 @@ export default {
         },
       });
       this.currentPage = --page;
-      this.updateVirtualTable();
     },
     encodeAddress(address) {
       if (!address) {
@@ -619,7 +618,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.nominate-btn {
+.contribute-btn {
   display: inline-block;
   border-radius: 2px;
   border: 1px solid var(--black-color);
@@ -631,9 +630,9 @@ export default {
   cursor: pointer;
   font-weight: 600;
 }
-.nominate-btn.el-button.is-disabled,
-.nominate-btn.el-button.is-disabled:focus,
-.nominate-btn.el-button.is-disabled:hover {
+.contribute-btn.el-button.is-disabled,
+.contribute-btn.el-button.is-disabled:focus,
+.contribute-btn.el-button.is-disabled:hover {
   color: #c0c4cc;
   cursor: not-allowed;
   background-image: none;
@@ -748,7 +747,7 @@ export default {
       .table-top-middle {
         flex: 1;
         padding: 0 20px;
-        .nominate-btn {
+        .contribute-btn {
           display: inline-block;
           border-radius: 2px;
           border: 1px solid var(--main-color);
@@ -877,7 +876,7 @@ export default {
 }
 </style>
 <style lang="scss">
-.nominate-dropdown-item {
+.contribute-dropdown-item {
   height: auto;
   line-height: auto;
   padding: 5px 20px;
