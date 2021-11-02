@@ -17,6 +17,14 @@
   "call_hash": "Call Hash",
   "cancel": "Cancel",
   "contact_us": "Contact Us",
+  "contribute": {
+    "add_memo": "Add Memo",
+    "index": "Contribute",
+    "select": "Please select the target crowdloan",
+    "slogan": "Welcome to contribute to crowdloan through Subscan crowdloan tool!",
+    "sponsor": "Sponsor",
+    "to_crowdloan": "Contribute to Crowdloan"
+  },
   "copy_right": "Subscan © {year} - Developed by Subscan Team",
   "copy_success": "Copy Succeeded",
   "create": "Create",
@@ -55,28 +63,14 @@
   "local_account": "Local Account",
   "members": "Members",
   "module": "Module",
+  "memo": "Memo",
   "msg": {
     "delete": "Are you sure to delete it？"
-  },
-  "multisig": {
-    "Confirmed Extrinsic": "Confirmed Extrinsic",
-    "In Progress": "In Progress",
-    "Members": "Members",
-    "Threshold": "Threshold",
-    "approval": "Multi-sig approval",
-    "approval_tip": "Please check the transaction information carefully and confirm it before approving",
-    "cancel": "Multi-sig Cancel",
-    "cancel_tip": "Only the initiator can cancel this extrinsic",
-    "customize": "Call Data (Customize)",
-    "from_chain": "Call Data (scanned from the chain storage)",
-    "index": "Multi-sig",
-    "intro": "Subscan Multi-sig is the most easy-to-use and secure way to manage Multi-sig wallets and extrinsics",
-    "sending_transaction": "Sending transaction {transaction}"
   },
   "name": "Name",
   "network": "Network",
   "ok": "Ok",
-  "open_source_notices": "Open Source Notices",
+  "open_source_notices": "Open Source",
   "owner": "Owner",
   "parachain.about_auction": "About Auction",
   "parachain.all_bid": "All Bid",
@@ -275,21 +269,5 @@
   "unavailable": "Unavailable",
   "value": "Value",
   "version_history": "Version History",
-  "view_in_subscan": "View on Subscan",
-  "wallet": {
-    "add": "Create Wallet",
-    "delete": "Delete Wallet",
-    "delete_confirm": "Are you sure to delete “{name}” ？",
-    "deploy": "Create Wallet",
-    "empty": "Please create a Multi-sig wallet first",
-    "index": "Wallet",
-    "list": "Multi-sig Wallet list",
-    "tip": {
-      "member_address": "Input a member account or select your own account from the dropdown list",
-      "member_name": "Member Name",
-      "members": "Members of the multi-sig wallet.  Each member is identified as an account/address.",
-      "name": "Arbitrary wallet name to help yourself remember",
-      "threshold": "Minimum approvals required to validate the multi-sig transaction"
-    }
-  }
+  "view_in_subscan": "View on Subscan"
 }

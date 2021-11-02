@@ -211,26 +211,26 @@
       <el-dialog
         :width="getDialogWidth()"
         :visible.sync="dialogVisible"
-        title="提示"
+        :title="$t('contribute.to_crowdloan')"
         center
         class="contribute-dialog"
       >
         <el-form :model="form" label-position="top">
-          <el-form-item label="活动名称" :label-width="formLabelWidth">
+          <el-form-item :label="$t('parachain.para_id')" :label-width="formLabelWidth">
             <el-input v-model="form.name" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="活动区域" :label-width="formLabelWidth">
-            <el-select v-model="form.region" placeholder="请选择活动区域">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
+          <el-form-item :label="$t('value')" :label-width="formLabelWidth">
+            <el-input v-model="form.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('memo')" :label-width="formLabelWidth">
+            <el-input v-model="form.name" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="centerDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="centerDialogVisible = false"
-            >确 定</el-button
+          <el-button type="primary" @click="dialogVisible = false"
+            >{{$t('contribute.index')}}</el-button
           >
+          <el-button @click="dialogVisible = false">{{$t('cancel')}}</el-button>
         </span>
       </el-dialog>
       <div class="fixed-panel">

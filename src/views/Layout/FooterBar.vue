@@ -6,12 +6,12 @@
       <div class="info-container align-items-center">
         <div class="copyright">{{$t('copy_right', { year: new Date().getFullYear()})}}</div>
         <div class="terms">
-          <a href="https://medium.com/subscan/tagged/subscan-update">{{ $t('version_history') }}</a>
+          <a target="_blank" href="https://medium.com/subscan/tagged/subscan-update">{{ $t('version_history') }}</a>
           <a href="https://www.subscan.io/privacy">{{ $t('privacy_policy') }}</a>
           <a href="https://www.subscan.io/term">{{ $t('term_of_use') }}</a>
-          <a href="https://www.subscan.io/open-source-notices">{{ $t('open_source_notices') }}</a>
-          <a href="https://subscan.statuspage.io/">{{ $t('service_status') }}</a>
-          <a href="https://github.com/itering/subscan-issue-tracker/issues/new/choose">{{ $t('feedback') }}</a>
+          <a target="_blank" href="https://github.com/itering/subscan-crowdloan-tools">{{ $t('open_source_notices') }}</a>
+          <a target="_blank" href="https://subscan.statuspage.io/">{{ $t('service_status') }}</a>
+          <a target="_blank" href="https://github.com/itering/subscan-issue-tracker/issues/new/choose">{{ $t('feedback') }}</a>
         </div>
         <div class="icon-group">
           <el-dropdown class="donate-dropdown" trigger="click">

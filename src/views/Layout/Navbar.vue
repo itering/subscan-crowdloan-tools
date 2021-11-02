@@ -385,6 +385,9 @@ export default {
     },
     changeSource(value) {
       this.$store.dispatch("SetSourceSelected", value);
+      this.$router.push({
+        query: { network: value },
+      });
       window.location.reload();
     },
     formatSource(module, type) {

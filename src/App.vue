@@ -121,6 +121,7 @@ export default {
       this.$store.dispatch("SetLanguage", language);
       this.$i18n.locale = language;
     }
+    this.detectNetwork();
     this.init();
   },
   mounted() {
@@ -147,6 +148,11 @@ export default {
           this.$store.dispatch("SetIsPolkadotConnect", true);
         }
       });
+    },
+    detectNetwork() {
+      const parsedObj = queryString.parse(location.search);
+      const networkParam = parsedObj['network'] || 'polkadot';
+      this.$store.dispatch('SetSourceSelected', networkParam);
     },
     async initChainState() {
       const chainState = await this.$polkaApi.rpc.system.properties();

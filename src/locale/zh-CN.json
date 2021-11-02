@@ -17,6 +17,14 @@
   "call_hash": "Call Hash",
   "cancel": "取消",
   "contact_us": "联系我们",
+  "contribute": {
+    "add_memo": "添加备注",
+    "index": "贡献",
+    "select": "请选择你要参与的众贷项目",
+    "slogan": "Subscan 众贷工具已上线，点击这里更加方便的参与众贷",
+    "sponsor": "推广",
+    "to_crowdloan": "众贷贡献"
+  },
   "copy_right": "Subscan © {year} - 由 Subscan 团队开发维护",
   "copy_success": "复制成功",
   "create": "创建",
@@ -54,29 +62,15 @@
   "loading": "加载中",
   "local_account": "本地账号",
   "members": "成员",
+  "memo": "备注",
   "module": "模块",
   "msg": {
     "delete": "确认删除吗？"
   },
-  "multisig": {
-    "Confirmed Extrinsic": "已确认",
-    "In Progress": "待确认",
-    "Members": "成员数",
-    "Threshold": "阈值",
-    "approval": "批准多签交易",
-    "approval_tip": "请确认交易信息无误后，再批准交易",
-    "cancel": "取消多签交易",
-    "cancel_tip": "只有发起人才能取消多签交易",
-    "customize": "Call Data (自定义)",
-    "from_chain": "Call Data (从链存储中读取)",
-    "index": "多签钱包",
-    "intro": "Subscan Multi-sig 安全便捷的多签钱包管理和交易工具",
-    "sending_transaction": "发送交易 {transaction}"
-  },
   "name": "名称",
   "network": "网络",
   "ok": "确认",
-  "open_source_notices": "开源公告",
+  "open_source_notices": "开源",
   "owner": "成员",
   "parachain.about_auction": "关于拍卖",
   "parachain.all_bid": "All Bid",
@@ -269,21 +263,5 @@
   "unavailable": "不可用",
   "value": "数量",
   "version_history": "版本历史",
-  "view_in_subscan": "去 Subscan 查看",
-  "wallet": {
-    "add": "创建钱包",
-    "delete": "删除钱包",
-    "delete_confirm": "确认要删除 “{name}” ？",
-    "deploy": "创建钱包",
-    "empty": "快来添加一个多签钱包吧",
-    "index": "钱包",
-    "list": "多签钱包列表",
-    "tip": {
-      "member_address": "输入账号或者从下拉列表中选择",
-      "member_name": "成员名字",
-      "members": "多签钱包成员账号，每一个成员为一个链上账号/地址。",
-      "name": "多签钱包名称（任意名字帮助记忆）",
-      "threshold": "多签生效至少需要获得的签名数"
-    }
-  }
+  "view_in_subscan": "去 Subscan 查看"
 }
