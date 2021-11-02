@@ -3,6 +3,7 @@ import apron_icon from 'Assets/images/apron-rococo.png';
 import ares_icon from 'Assets/images/ares.svg';
 import basilisk_icon from 'Assets/images/basilisk.png';
 import bifrost_icon from 'Assets/images/bifrost-rococo.svg';
+import bitcountry_icon from 'Assets/images/bitcountry-pioneer.png';
 import chainx_icon from 'Assets/images/chainx-rococo.svg';
 import calamari_icon from 'Assets/images/calamari.png';
 import crab_icon from 'Assets/images/crab-rococo.svg';
@@ -19,6 +20,7 @@ import moonriver_icon from 'Assets/images/moonriver.png';
 import parallel_icon from 'Assets/images/heiko.svg';
 import picasso_icon from 'Assets/images/picasso.svg';
 import polkasmith_icon from 'Assets/images/polkasmith.svg';
+import quartz_icon from 'Assets/images/quartz.png';
 import sakura_icon from 'Assets/images/sakura.svg';
 import robonomics_icon from 'Assets/images/robonomics-rococo.svg';
 import shiden_icon from 'Assets/images/shiden-rococo.png';
@@ -29,8 +31,7 @@ export default [{
   name: 'networkList',
   value: {
     all: {
-      value: [
-        {
+      value: [{
           label: "Polkadot",
           network: "polkadot",
           value: "polkadot",
@@ -103,6 +104,27 @@ export default [{
           "Discord Link": "https://discord.gg/8DRBw2h5X4",
           "Medium Link": "https://medium.com/@bifrost_finance",
           "Github Link": "https://github.com/bifrost-finance",
+        },
+        {
+          info: 'Bit.Country Pioneer',
+          paraId: 2096,
+          text: 'Bit.Country Pioneer',
+          logo: bitcountry_icon,
+          pr: "https://github.com/itering/parachain-projects-info/pull/20",
+          "Description (en)": "Bit.Country Metaverse Network is an application framework and blockchain for user-created metaverses and games. The Platform for User-created Metaverses & Games with Opportunities to Earn.",
+          "Parachain Crowdloans Allocation (en)": "https://bitcountry.medium.com/bit-country-pioneer-crowdloan-on-kusama-2acb5cde9f85",
+          "Parachain Crowdloans Allocation (zh)": "https://bitcountry.medium.com/bit-country-pioneer-crowdloan-on-kusama-2acb5cde9f85",
+          "Auction Reward & Reward Vesting Schedule (en)": "https://bitcountry.medium.com/bit-country-pioneer-crowdloan-on-kusama-2acb5cde9f85",
+          "Auction Reward & Reward Vesting Schedule (zh)": "https://bitcountry.medium.com/bit-country-pioneer-crowdloan-on-kusama-2acb5cde9f85",
+          "Financing Information (en)": "",
+          "Financing Information (zh)": "",
+          "Website Link": "http://bit.country/",
+          "Twitter Link": "https://twitter.com/bitdotcountry",
+          "Telegram Link": "https://t.me/BitCountryOfficialTG",
+          "Discord Link": "https://discord.gg/PaMAXZZ59N",
+          "Medium Link": "https://bitcountry.medium.com/",
+          "Github Link": "https://github.com/bit-country/Metaverse-Network",
+          "Owner account": "Ff9JGfDpZ9TjLh7C2NXSUNAd3rAFNFqefxWE35vjCFyXKr4"
         },
         {
           info: 'calamari',
@@ -347,6 +369,28 @@ export default [{
           "Discord Link": "",
           "Medium Link": "https://medium.com/polkafoundry",
           "Github Link": "https://github.com/polkafoundry",
+        },
+        {
+          info: 'Quartz',
+          paraId: 2095,
+          text: 'Quartz by Unique',
+          logo: quartz_icon,
+          pr: "https://github.com/itering/parachain-projects-info/pull/21",
+          "Description (en)": "NFT Chain for Kusama. Provides basic and advanced functionality of creating and managing NFTs in the Kusama ecosystem.",
+          "Description (zh)": "Kusama 上的 NFT 链。提供在 Kusama 生态系统中创建和管理 NFT 的基本和高级功能。",
+          "Parachain Crowdloans Allocation (en)": "https://unique.network/quartz/crowdloan/contribute/",
+          "Parachain Crowdloans Allocation (zh)": "https://unique.network/quartz/crowdloan/contribute/",
+          "Auction Reward & Reward Vesting Schedule (en)": "https://unique.network/quartz/crowdloan/contribute/",
+          "Auction Reward & Reward Vesting Schedule (zh)": "https://unique.network/quartz/crowdloan/contribute/",
+          "Financing Information (en)": "https://unique.network/quartz/",
+          "Financing Information (zh)": "https://unique.network/quartz/",
+          "Website Link": "https://unique.network/",
+          "Twitter Link": "https://twitter.com/unique_nftchain",
+          "Telegram Link": "https://t.me/Uniquechain",
+          "Discord Link": "https://discord.gg/jHVdZhsakC",
+          "Medium Link": "",
+          "Github Link": "https://github.com/UniqueNetwork",
+          "Owner account": "HC7FK5TNgUrdA8L3P3g4tU6s5axJpjsXr7oYArejv6Vjadh"
         },
         {
           info: 'robonomics',

@@ -216,8 +216,44 @@
         class="contribute-dialog"
       >
         <el-form :model="form" label-position="top">
-          <el-form-item :label="$t('parachain.para_id')" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-form-item
+            :label="$t('parachain.para_id')"
+            :label-width="formLabelWidth"
+          >
+            <el-input v-model="form.paraId" size="small" disabled>
+              <template slot="append">
+                <el-dropdown trigger="click" @command="handleParaIdChange">
+                  <span>
+                    <i class="el-icon-caret-bottom"></i>
+                  </span>
+                  <el-dropdown-menu
+                    slot="dropdown"
+                    class="version-dropdown-menu"
+                  >
+                    <div class="prefix-search-input">
+                      <el-input
+                        size="small"
+                        clearable
+                        v-model.trim="keyword"
+                        :placeholder="$t('contribute.select')"
+                      />
+                    </div>
+                    <div class="dropdown-scroll-list">
+                      <el-dropdown-item
+                        :command="item.value"
+                        class="menu-item"
+                        v-for="item in filteredParaList"
+                        :key="item.value"
+                      >
+                        <span class="prefix-name">{{
+                          `${item.para_id} (${item.name})`
+                        }}</span>
+                      </el-dropdown-item>
+                    </div>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item :label="$t('value')" :label-width="formLabelWidth">
             <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -227,10 +263,12 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="dialogVisible = false"
-            >{{$t('contribute.index')}}</el-button
-          >
-          <el-button @click="dialogVisible = false">{{$t('cancel')}}</el-button>
+          <el-button type="primary" @click="dialogVisible = false">{{
+            $t("contribute.index")
+          }}</el-button>
+          <el-button @click="dialogVisible = false">{{
+            $t("cancel")
+          }}</el-button>
         </span>
       </el-dialog>
       <div class="fixed-panel">
@@ -332,7 +370,7 @@ import {
   getCurrencyTokenDetail,
   getTokenDecimal,
   getTokenDetail,
-  isMobile
+  isMobile,
 } from "../../utils/tools";
 
 export default {
@@ -366,17 +404,11 @@ export default {
       checkedValidators: [],
       api: null,
       extensionAccountList: [],
+      keyword: '',
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        paraId: '',
       },
-      formLabelWidth: '120px',
+      formLabelWidth: "120px",
       signer: {
         address: "",
         meta: {
@@ -411,6 +443,19 @@ export default {
     },
     filteredParachain() {
       return this.sortedParachain;
+    },
+    filteredParaList() {
+      let keyWord = this.keyword.toLowerCase();
+      return this.sortedParachain.filter(function (parachain) {
+        if (parachain && ('' + parachain.para_id).replace(' ','').toLowerCase().includes(keyWord)) {
+          return true;
+        }
+        let name = parachain && parachain.name;
+        if (name && (name.toLowerCase()).includes(keyWord)) {
+          return true;
+        }
+        return false;
+      });
     },
     iconImg() {
       let icon = "";
@@ -485,18 +530,18 @@ export default {
         this.signer = allAccounts[0].address || "";
       }
       this.isApiReady = true;
-      this.getAccountBalance();
+      // this.getAccountBalance();
     },
     getAccountBalance() {
       let addressList = _.map(this.extensionAccountList, "address");
-      this.$polkaApi.query.system.account.multi(
-        addressList,
-        (balances) => {
-          _.forEach(balances, ({ data }, index) => {
-            this.extensionAccountList[index]["balance"] = accuracyFormat(data.free.toString(), this.currencyTokenDetail.token_decimals);
-          });
-        }
-      );
+      this.$polkaApi.query.system.account.multi(addressList, (balances) => {
+        _.forEach(balances, ({ data }, index) => {
+          this.extensionAccountList[index]["balance"] = accuracyFormat(
+            data.free.toString(),
+            this.currencyTokenDetail.token_decimals
+          );
+        });
+      });
     },
     getWalletUrl() {
       return "https://polkadot.js.org/apps/";
@@ -572,6 +617,9 @@ export default {
         }
       });
       return result;
+    },
+    handleParaIdChange() {
+
     },
     handleRuntimeExpand(row) {
       this.$router.push(`/crowdloan/${row.fund_id}`);
