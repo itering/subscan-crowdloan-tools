@@ -256,7 +256,7 @@
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('value')" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off"></el-input>
+            <el-input v-model="form.contributeAmount"></el-input>
           </el-form-item>
           <el-form-item :label="$t('memo')" :label-width="formLabelWidth">
             <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -320,12 +320,6 @@
                 </h3>
               </div>
             </div>
-            <el-input
-              class="contribute-amount-input"
-              size="small"
-              v-model.trim="contributeAmount"
-              :placeholder="$t('')"
-            />
             <el-button
               class="contribute-btn"
               :disabled="!isApiReady"
@@ -394,7 +388,6 @@ export default {
       isContributeLoading: false,
       isApiReady: false,
       isStaking: false,
-      contributeAmount: "",
       dialogVisible: true,
       total: 0,
       pageSize: 25,
@@ -407,6 +400,7 @@ export default {
       keyword: '',
       form: {
         paraId: '',
+        contributeAmount: '',
       },
       formLabelWidth: "120px",
       signer: {
@@ -648,7 +642,7 @@ export default {
         const paraId = this.checkedValidators && this.checkedValidators[0];
         this.$polkaApi.setSigner(injector.signer);
         const unsub = await this.$polkaApi.tx.crowdloan
-          .contribute(paraId, this.inputToKSMBN(this.contributeAmount), null)
+          .contribute(paraId, this.inputToKSMBN(this.form.contributeAmount), null)
           .signAndSend(this.signer, ({ events = [], status }) => {
             // if (status.isFinalized) {
             events.forEach(({ event: { method, section } }) => {
