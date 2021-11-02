@@ -208,6 +208,31 @@
           @currentChange="currentChange"
         />
       </div>
+      <el-dialog
+        :width="getDialogWidth()"
+        :visible.sync="dialogVisible"
+        title="提示"
+        center
+        class="contribute-dialog"
+      >
+        <el-form :model="form" label-position="top">
+          <el-form-item label="活动名称" :label-width="formLabelWidth">
+            <el-input v-model="form.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="活动区域" :label-width="formLabelWidth">
+            <el-select v-model="form.region" placeholder="请选择活动区域">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="centerDialogVisible = false"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
       <div class="fixed-panel">
         <div class="subscan-container">
           <div v-if="!extensionAccountList.length">
@@ -235,7 +260,7 @@
                   />
                   <div class="title">
                     <p>{{ item.meta.name }}</p>
-                    <h3>{{ encodeAddress(item.address) | hashFormat}}</h3>
+                    <h3>{{ encodeAddress(item.address) | hashFormat }}</h3>
                   </div>
                 </div>
               </el-option>
@@ -252,14 +277,21 @@
               />
               <div class="title">
                 <p>{{ addressToName(signer).meta.name }}</p>
-                <h3>{{ encodeAddress(signer) | hashFormat}}<img :src="iconImg" /></h3>
+                <h3>
+                  {{ encodeAddress(signer) | hashFormat }}<img :src="iconImg" />
+                </h3>
               </div>
             </div>
-            <el-input class="contribute-amount-input" size="small" v-model.trim="contributeAmount" :placeholder="$t('')" />
+            <el-input
+              class="contribute-amount-input"
+              size="small"
+              v-model.trim="contributeAmount"
+              :placeholder="$t('')"
+            />
             <el-button
               class="contribute-btn"
-              :disabled="!checkedValidators.length || !isApiReady"
-              @click.stop="submitContribute()"
+              :disabled="!isApiReady"
+              @click.stop="dialogVisible = true"
               :loading="isContributeLoading"
               >{{ $t("parachain.contribute") }}</el-button
             >
@@ -300,6 +332,7 @@ import {
   getCurrencyTokenDetail,
   getTokenDecimal,
   getTokenDetail,
+  isMobile
 } from "../../utils/tools";
 
 export default {
@@ -323,7 +356,8 @@ export default {
       isContributeLoading: false,
       isApiReady: false,
       isStaking: false,
-      contributeAmount: '',
+      contributeAmount: "",
+      dialogVisible: true,
       total: 0,
       pageSize: 25,
       currentPage: 0,
@@ -332,6 +366,17 @@ export default {
       checkedValidators: [],
       api: null,
       extensionAccountList: [],
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      },
+      formLabelWidth: '120px',
       signer: {
         address: "",
         meta: {
@@ -403,6 +448,7 @@ export default {
     }
   },
   methods: {
+    isMobile,
     accuracyFormat,
     parseLeaseIdx2Time,
     getTokenDecimal,
@@ -419,6 +465,13 @@ export default {
         }
       }
     },
+    getDialogWidth() {
+      if (this.isMobile()) {
+        return "300px";
+      } else {
+        return "530px";
+      }
+    },
     handleInputChange() {
       this.debounceFilter();
     },
@@ -426,40 +479,24 @@ export default {
       this.currentChange(1);
     },
     async initPolkadotJs() {
-      // await web3Enable('subscan.io');
       const allAccounts = await web3Accounts();
-
       this.extensionAccountList = allAccounts || [];
       if (allAccounts && allAccounts.length > 0) {
         this.signer = allAccounts[0].address || "";
       }
-
-      // const network = this.sourceSelected;
-      // const provider = new WsProvider(ENDPOINTS_MAP[network].wss);
-      // const api = new ApiPromise({
-      //   provider,
-      // });
       this.isApiReady = true;
-      // this.api = api;
-      // this.api.isReady
-      //   .then(() => {
-      //     this.isApiReady = true;
-      //   })
-      //   .catch((e) => {
-      //     this.isApiReady = false;
-      //     console.log('api ready error: ', e);
-      //   });
+      this.getAccountBalance();
     },
-    async getBondedValue() {
-      let self = this;
-      if (this.signer && this.isApiReady) {
-        try {
-          const ledger = await this.$polkaApi.query.staking.ledger(self.signer);
-          self.isStaking = !(ledger.unwrap() || { isEmpty: true }).isEmpty;
-        } catch (e) {
-          self.isStaking = false;
+    getAccountBalance() {
+      let addressList = _.map(this.extensionAccountList, "address");
+      this.$polkaApi.query.system.account.multi(
+        addressList,
+        (balances) => {
+          _.forEach(balances, ({ data }, index) => {
+            this.extensionAccountList[index]["balance"] = accuracyFormat(data.free.toString(), this.currencyTokenDetail.token_decimals);
+          });
         }
-      }
+      );
     },
     getWalletUrl() {
       return "https://polkadot.js.org/apps/";

@@ -133,6 +133,7 @@ export default {
     init() {
       this.initPolkadotJs();
       this.initParachain();
+      // this.getExtensionAccounts();
     },
      async initParachain() {
       await this.getParachainMetaData();

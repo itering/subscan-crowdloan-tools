@@ -34,6 +34,7 @@ function getBaseURL() {
   if (process.env.NODE_ENV === 'production') {
     if (location && location.origin) {
       result = "https://kusama.webapi.subscan.io";
+      // result = "https://polkadot.webapi.subscan.io";
     }
   }
   return result;

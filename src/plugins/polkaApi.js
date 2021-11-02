@@ -8,6 +8,7 @@ import { TypeRegistry } from '@polkadot/types/create';
 let apiInstance = {};
 const registry = new TypeRegistry();
 
+// eslint-disable-next-line no-unused-vars
 async function connectWS() {
   const network = store.state.global.sourceSelected
   const { wss } = ENDPOINTS_MAP[network];
@@ -37,5 +38,6 @@ async function connectWS() {
 }
 
 connectWS();
+// store.commit("SET_KEYRING_STATUS", true);
 
 export default { apiInstance, registry };
