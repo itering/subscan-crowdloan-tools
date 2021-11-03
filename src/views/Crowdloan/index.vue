@@ -13,7 +13,7 @@
         >
           <el-table :data="filteredParachain" style="width: 100%">
             <el-table-column
-              min-width="100"
+              min-width="105"
               prop="para_id"
               sortable
               :label="$t('parachain.para_id')"
@@ -291,10 +291,10 @@
       </el-dialog>
       <div class="fixed-panel">
         <div class="subscan-container">
-          <div v-if="!extensionAccountList.length">
+          <div v-if="!extensionAccountList.length" class="extention-section">
             <p>{{ $t("no_polkadotjs_extension") }}</p>
           </div>
-          <div v-if="extensionAccountList.length">
+          <div v-else class="extention-section">
             <el-select
               v-model="signer"
               placeholder=""
@@ -338,7 +338,7 @@
                 </h3>
               </div>
             </div>
-            <div>
+            <div class="contribute-section">
               <span class="available-amount">{{amountPlaceholder}}</span>
               <el-button
                 class="btn white-btn contribute-btn"
@@ -857,14 +857,12 @@ export default {
         top: 0;
         left: 10px;
       }
-      .subscan-container {
-        & > div {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 11px 0;
-          position: relative;
-        }
+      .extention-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        position: relative;
       }
       .contribute-btn {
         padding: 8px 12px;
@@ -997,6 +995,22 @@ export default {
   }
   @media screen and (max-width: $screen-xs) {
     .subscan-container {
+      .fixed-panel {
+        .extention-section {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px;
+          position: relative;
+        }
+        .contribute-section {
+          display: flex;
+          flex-direction: column;
+        }
+        .available-amount {
+          margin-right: 0;
+        }
+      }
       .validator-search-wrapper {
         width: 220px;
       }
@@ -1088,6 +1102,25 @@ export default {
       line-height: 32px;
       & + .button {
         margin-left: 20px;
+      }
+    }
+  }
+  @media screen and (max-width: $screen-xs) {
+    /deep/ .el-dialog__body {
+      padding: 25px 0 5px 0;
+    }
+    .contribute-form {
+      padding: 0 15px;
+    }
+    /deep/ .el-dialog__footer {
+      padding: 5px 5px 20px;
+      .button {
+        width: 100px;
+        height: 32px;
+        line-height: 32px;
+        & + .button {
+          margin-left: 20px;
+        }
       }
     }
   }

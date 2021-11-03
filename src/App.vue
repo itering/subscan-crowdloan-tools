@@ -387,6 +387,11 @@ export default {
       color: #fff;
     }
   }
+  @media screen and (max-width:$screen-xs) {
+    .subscan-card {
+      flex: 1;
+    }
+  }
 }
 </style>
 <style lang="scss">

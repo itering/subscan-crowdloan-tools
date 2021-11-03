@@ -70,6 +70,7 @@
   },
   "name": "名称",
   "network": "网络",
+  "no_polkadotjs_extension": "未安装 polkadot.js（扩展程序）或无可用的账号",
   "ok": "确认",
   "open_source_notices": "开源",
   "owner": "成员",

@@ -70,6 +70,7 @@
   },
   "name": "Name",
   "network": "Network",
+  "no_polkadotjs_extension": "No polkadot.js (extension) installed or no available account.",
   "ok": "Ok",
   "open_source_notices": "Open Source",
   "owner": "Owner",
