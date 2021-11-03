@@ -13,19 +13,6 @@
         >
           <el-table :data="filteredParachain" style="width: 100%">
             <el-table-column
-              min-width="75"
-              prop="fund_id"
-              :label="$t('parachain.fund_id')"
-            >
-              <template slot-scope="scope">
-                <div class="link">
-                  <router-link :to="`/crowdloan/${scope.row.fund_id}`">{{
-                    scope.row.fund_id
-                  }}</router-link>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
               min-width="170"
               prop="para_id"
               sortable
@@ -49,7 +36,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               min-width="150"
               prop="crowdloan_account"
               :label="$t('parachain.owner')"
@@ -66,7 +53,7 @@
                   :hasIdenticon="false"
                 ></address-display>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
               min-width="120"
               prop="first_period"
@@ -351,7 +338,7 @@ import _ from "lodash";
 // import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3FromAddress } from "@polkadot/extension-dapp";
 import { mapState } from "vuex";
-import AddressDisplay from "@/views/Components/AddressDisplay";
+// import AddressDisplay from "@/views/Components/AddressDisplay";
 import Balances from "@/views/Components/Balances";
 import Pagination from "@/views/Components/Pagination";
 import BN from "bn.js";
@@ -382,7 +369,7 @@ export default {
   name: "Contribute",
   components: {
     Identicon,
-    AddressDisplay,
+    // AddressDisplay,
     Pagination,
     Balances,
   },
@@ -399,7 +386,7 @@ export default {
       isContributeLoading: false,
       isApiReady: false,
       isStaking: false,
-      dialogVisible: true,
+      dialogVisible: false,
       total: 0,
       pageSize: 25,
       currentPage: 0,

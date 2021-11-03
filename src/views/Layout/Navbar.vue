@@ -72,13 +72,13 @@
                   <a :href="networkHref">{{ $t("explorer") }}</a>
                 </div>
                 <el-collapse accordion>
-                  <router-link
+                  <!-- <router-link
                     class="item"
                     to="/account"
                     tag="div"
                     @click.native="drawer = false"
                     >{{ $t("accounts") }}</router-link
-                  >
+                  > -->
                   <el-collapse-item :title="$t('about')" name="4">
                     <a
                       class="sub-item"
