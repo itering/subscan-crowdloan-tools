@@ -208,7 +208,12 @@
             :label-width="formLabelWidth"
             class="para-select"
           >
-            <el-input :value="paraName" size="small" disabled>
+            <el-input
+              :placeholder="$t('contribute.select')"
+              :value="paraName"
+              size="small"
+              disabled
+            >
               <template slot="append">
                 <el-dropdown trigger="click" @command="handleParaIdChange">
                   <span>
@@ -223,7 +228,7 @@
                         size="small"
                         clearable
                         v-model.trim="keyword"
-                        :placeholder="$t('contribute.select')"
+                        :placeholder="$t('contribute.search')"
                       />
                     </div>
                     <div class="dropdown-scroll-list">
@@ -244,7 +249,10 @@
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('value')" :label-width="formLabelWidth">
-            <el-input v-model="form.contributeAmount">
+            <el-input
+              :placeholder="amountPlaceholder"
+              v-model="form.contributeAmount"
+            >
               <template slot="append">{{
                 tokenDetail && tokenDetail.symbol
               }}</template>
@@ -266,7 +274,7 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <div class="button main-btn" @click="dialogVisible = false">
+          <div class="button main-btn" @click="submitContribute">
             {{ $t("contribute.index") }}
           </div>
           <div class="button white-btn" @click="dialogVisible = false">
@@ -440,6 +448,15 @@ export default {
     tokenDetail() {
       return getTokenDetail(this.token, this.sourceSelected, this.currency);
     },
+    amountPlaceholder() {
+      let result = "0";
+      _.forEach(this.extensionAccountList, (account) => {
+        if (account.address === this.signer) {
+          result = account.balance || 0;
+        }
+      });
+      return this.$t("available") + ": " + result;
+    },
     paraName() {
       let result = "";
       _.forEach(this.sortedParachain, (item) => {
@@ -545,7 +562,7 @@ export default {
         this.signer = allAccounts[0].address || "";
       }
       this.isApiReady = true;
-      // this.getAccountBalance();
+      this.getAccountBalance();
     },
     getAccountBalance() {
       let addressList = _.map(this.extensionAccountList, "address");
@@ -643,12 +660,12 @@ export default {
       return "background-color:pink;font-size:15px;";
     },
     inputToKSMBN(value) {
-      const DECIMAL = 12;
+      let decimal = this.getTokenDecimal(this.currencyTokenDetail);
       const TEN = new Bignumber(10);
       if (!value) return new BN(0);
       try {
         return new BN(
-          TEN.pow(new Bignumber(DECIMAL)).times(value).toFixed(0, 1)
+          TEN.pow(new Bignumber(decimal)).times(value).toFixed(0, 1)
         );
       } catch (error) {
         console.log("utils error:", error);
@@ -660,15 +677,29 @@ export default {
       let self = this;
       try {
         const injector = await web3FromAddress(this.signer);
-        const paraId = this.checkedValidators && this.checkedValidators[0];
         this.$polkaApi.setSigner(injector.signer);
-        const unsub = await this.$polkaApi.tx.crowdloan
-          .contribute(
-            paraId,
-            this.inputToKSMBN(this.form.contributeAmount),
-            null
-          )
-          .signAndSend(this.signer, ({ events = [], status }) => {
+        let tx = this.$polkaApi.tx.crowdloan.contribute(
+          this.form.paraId,
+          this.inputToKSMBN(this.form.contributeAmount),
+          null
+        );
+        if (this.form.hasMemo && this.form.memo) {
+          let txs = [
+            this.$polkaApi.tx.crowdloan.contribute(
+              this.form.paraId,
+              this.inputToKSMBN(this.form.contributeAmount),
+              null
+            ),
+            this.$polkaApi.tx.crowdloan.addMemo(
+              this.form.paraId,
+              this.form.memo
+            ),
+          ];
+          tx = this.$polkaApi.tx.utility.batchAll(txs);
+        }
+        let unsub = await tx.signAndSend(
+          this.signer,
+          ({ events = [], status }) => {
             // if (status.isFinalized) {
             events.forEach(({ event: { method, section } }) => {
               if (method === "ExtrinsicSuccess" && section === "system") {
@@ -692,7 +723,8 @@ export default {
               }
             });
             // }
-          });
+          }
+        );
       } catch (e) {
         console.log(e);
         this.isContributeLoading = false;
