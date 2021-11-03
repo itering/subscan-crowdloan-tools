@@ -281,9 +281,12 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <div class="button main-btn" @click="submitContribute">
-            {{ $t("contribute.index") }}
-          </div>
+          <el-button
+            class="button main-btn"
+            @click.stop="submitContribute"
+            :loading="isContributeLoading"
+            >{{ $t("contribute.index") }}</el-button
+          >
           <div class="button white-btn" @click="closeContributeDialog">
             {{ $t("cancel") }}
           </div>
@@ -344,7 +347,6 @@
                 class="btn white-btn contribute-btn"
                 :disabled="!isApiReady"
                 @click.stop="selectParaId()"
-                :loading="isContributeLoading"
                 >{{ $t("parachain.contribute") }}</el-button
               >
             </div>
@@ -735,6 +737,7 @@ export default {
                 if (status.isFinalized) {
                   unsub && unsub();
                 }
+                this.closeContributeDialog();
                 this.isContributeLoading = false;
               }
               if (method === "ExtrinsicFailed" && section === "system") {
@@ -1100,6 +1103,7 @@ export default {
       width: 140px;
       height: 32px;
       line-height: 32px;
+      padding: 0;
       & + .button {
         margin-left: 20px;
       }
