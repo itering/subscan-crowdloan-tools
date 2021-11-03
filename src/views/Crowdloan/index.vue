@@ -13,7 +13,7 @@
         >
           <el-table :data="filteredParachain" style="width: 100%">
             <el-table-column
-              min-width="170"
+              min-width="100"
               prop="para_id"
               sortable
               :label="$t('parachain.para_id')"
@@ -25,6 +25,22 @@
                     :to="`/parachain/${scope.row.para_id}`"
                   >
                     <span class="para-id">{{ scope.row.para_id }}</span>
+                  </router-link>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              min-width="150"
+              prop="para_id"
+              sortable
+              :label="$t('parachain.project')"
+            >
+              <template slot-scope="scope">
+                <div class="link para-id">
+                  <router-link
+                    class="project"
+                    :to="`/parachain/${scope.row.para_id}`"
+                  >
                     <img
                       v-if="scope.row.logo"
                       :src="scope.row.logo"
@@ -55,7 +71,7 @@
               </template>
             </el-table-column> -->
             <el-table-column
-              min-width="120"
+              min-width="135"
               prop="first_period"
               sortable
               :label="$t('parachain.lease_index')"
@@ -146,7 +162,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              min-width="115"
+              min-width="125"
               prop="contributors"
               sortable
               :label="$t('parachain.contributor')"
@@ -161,15 +177,20 @@
                 <div v-else>-</div>
               </template>
             </el-table-column>
-            <!-- <el-table-column width="80">
+            <el-table-column width="180">
               <template slot-scope="scope">
-                <div class="expand-btn" @click="handleRuntimeExpand(scope.row)">
-                  <div class="el-table__expand-icon">
-                    <i class="el-icon el-icon-arrow-right"></i>
+                <div class="action-btns">
+                  <div class="contribute-btn white-btn" @click="selectParaId(scope.row.para_id)">
+                    {{$t('contribute.index')}}
+                  </div>
+                  <div class="expand-btn" @click="handleRuntimeExpand(scope.row)">
+                    <div class="el-table__expand-icon">
+                      <i class="el-icon el-icon-arrow-right"></i>
+                    </div>
                   </div>
                 </div>
               </template>
-            </el-table-column> -->
+            </el-table-column>
           </el-table>
         </el-checkbox-group>
       </div>
@@ -189,7 +210,7 @@
         center
         class="contribute-dialog"
       >
-        <el-form :model="form" label-position="top" class="contribute-form">
+        <el-form :model="form" ref="contributeForm" label-position="top" class="contribute-form">
           <el-form-item
             :label="$t('parachain.para_id')"
             :label-width="formLabelWidth"
@@ -198,7 +219,6 @@
             <el-input
               :placeholder="$t('contribute.select')"
               :value="paraName"
-              size="small"
               disabled
             >
               <template slot="append">
@@ -264,7 +284,7 @@
           <div class="button main-btn" @click="submitContribute">
             {{ $t("contribute.index") }}
           </div>
-          <div class="button white-btn" @click="dialogVisible = false">
+          <div class="button white-btn" @click="closeContributeDialog">
             {{ $t("cancel") }}
           </div>
         </span>
@@ -318,13 +338,16 @@
                 </h3>
               </div>
             </div>
-            <el-button
-              class="contribute-btn"
-              :disabled="!isApiReady"
-              @click.stop="dialogVisible = true"
-              :loading="isContributeLoading"
-              >{{ $t("parachain.contribute") }}</el-button
-            >
+            <div>
+              <span class="available-amount">{{amountPlaceholder}}</span>
+              <el-button
+                class="btn white-btn contribute-btn"
+                :disabled="!isApiReady"
+                @click.stop="selectParaId()"
+                :loading="isContributeLoading"
+                >{{ $t("parachain.contribute") }}</el-button
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -442,7 +465,7 @@ export default {
           result = account.balance || 0;
         }
       });
-      return this.$t("available") + ": " + result;
+      return this.$t("available") + ": " + result + ' ' + (this.tokenDetail.symbol||'');
     },
     paraName() {
       let result = "";
@@ -536,6 +559,20 @@ export default {
         return "530px";
       }
     },
+    selectParaId(paraId) {
+      this.form.paraId = paraId || '';
+      this.dialogVisible = true;
+    },
+    closeContributeDialog() {
+      this.dialogVisible = false;
+      this.form = {
+        hasMemo: false,
+        memo: "",
+        paraId: "",
+        contributeAmount: ""
+      };
+      // this.$refs['contributeForm'] && this.$refs['contributeForm'].resetFields();
+    },
     handleInputChange() {
       this.debounceFilter();
     },
@@ -549,7 +586,7 @@ export default {
         this.signer = allAccounts[0].address || "";
       }
       this.isApiReady = true;
-      this.getAccountBalance();
+      // this.getAccountBalance();
     },
     getAccountBalance() {
       let addressList = _.map(this.extensionAccountList, "address");
@@ -741,26 +778,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.contribute-btn {
-  display: inline-block;
-  border-radius: 2px;
-  border: 1px solid var(--black-color);
-  color: var(--white);
-  background: var(--black-color);
-  padding: 5px 20px;
-  line-height: 1.5;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.contribute-btn.el-button.is-disabled,
-.contribute-btn.el-button.is-disabled:focus,
-.contribute-btn.el-button.is-disabled:hover {
-  color: #c0c4cc;
-  cursor: not-allowed;
-  background-image: none;
+.white-btn.el-button,
+.white-btn.el-button:focus,
+.white-btn.el-button:hover {
   background-color: var(--white);
-  border-color: #ebeef5;
 }
 .account-box {
   display: flex;
@@ -845,8 +866,13 @@ export default {
           position: relative;
         }
       }
-      .contribute-amount-input {
-        width: 200px;
+      .contribute-btn {
+        padding: 8px 12px;
+      }
+      .available-amount {
+        color: var(--black-color);
+        font-size: 14px;
+        margin-right: 20px;
       }
     }
     .table-top {
@@ -865,20 +891,6 @@ export default {
         }
         .all {
           padding: 0 10px;
-        }
-      }
-      .table-top-middle {
-        flex: 1;
-        padding: 0 20px;
-        .contribute-btn {
-          display: inline-block;
-          border-radius: 2px;
-          border: 1px solid var(--main-color);
-          color: var(--main-color);
-          padding: 5px 20px;
-          font-size: 14px;
-          cursor: pointer;
-          font-weight: 600;
         }
       }
     }
@@ -928,10 +940,19 @@ export default {
         cursor: pointer;
         user-select: none;
       }
+      .action-btns {
+        display: flex;
+      }
+      .contribute-btn {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 3px 12px;
+      }
       .expand-btn {
+        display: inline-block;
         .el-table__expand-icon {
           width: 48px;
-          height: 26px;
+          height: 32px;
           background: var(--white);
           border-radius: 4px;
           border: 1px solid var(--btn-border-color);
@@ -1018,8 +1039,14 @@ export default {
         background-color: var(--main-color);
       }
     }
-    /deep/ .el-from-item {
+    /deep/ .el-form-item {
       margin-bottom: 20px;
+      .el-input {
+        box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.05);
+      }
+      .el-input-group {
+        box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.05);
+      }
     }
     /deep/ .el-form-item__label {
       font-weight: bold;
@@ -1031,7 +1058,6 @@ export default {
       /deep/ .el-input {
         input {
           font-size: 14px;
-          font-weight: 600;
           color: var(--main-color);
           cursor: default;
           background-color: var(--white);

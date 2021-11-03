@@ -1,6 +1,7 @@
 // import "@babel/polyfill"; // 引入垫片
 import Vue from "vue";
 import VueI18n from "vue-i18n";
+import VueGtag from "vue-gtag";
 import './assets/scripts/iconfont'
 
 // import 'Directives'; // 全局注入指令（请使用局部注入）
@@ -53,6 +54,13 @@ const apolloProvider = new VueApollo({
   defaultClient,
   clients: apolloClients
 });
+
+//add google ua
+Vue.use(VueGtag, {
+  config: {
+    id: "G-16Y89LWGG9"
+  }
+}, router);
 
 // 设置为 false 以阻止 vue 在启动时生成生产提示
 Vue.config.productionTip = false;
