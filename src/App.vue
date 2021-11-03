@@ -136,11 +136,11 @@ export default {
       this.initParachain();
       // this.getExtensionAccounts();
     },
-     async initParachain() {
+    async initParachain() {
       await this.getParachainMetaData();
     },
     async getParachainMetaData() {
-      await Promise.all([this.$store.dispatch('SetParachainMetadata')]);
+      await Promise.all([this.$store.dispatch("SetParachainMetadata")]);
     },
     async getExtensionAccounts() {
       this.$store.dispatch("SetExtensionAccountList").then(() => {
@@ -151,8 +151,8 @@ export default {
     },
     detectNetwork() {
       const parsedObj = queryString.parse(location.search);
-      const networkParam = parsedObj['network'] || 'polkadot';
-      this.$store.dispatch('SetSourceSelected', networkParam);
+      const networkParam = parsedObj["network"] || "polkadot";
+      this.$store.dispatch("SetSourceSelected", networkParam);
     },
     async initChainState() {
       const chainState = await this.$polkaApi.rpc.system.properties();
@@ -391,10 +391,21 @@ export default {
 </style>
 <style lang="scss">
 @import "./assets/style/index.scss";
-body {
+html {
   --black-color: #302b3c;
-  --white: #fff;
+  --border-color: #e7eaf3;
   --input-border-color: #dcdfe6;
+  --white: #fff;
+  --black-btn-text: #fff;
+  --table-bg: #f3f5f9;
+  --table-text-color: #363636;
+  --btn-border-color: #dbdbdb;
+  --main-bg: #f8f9fa;
+  --menu-item-color: #212529;
+  --menu-item-hover-color: #16181b;
+  --sub-title-color: #2a2727;
+}
+body {
   &.kusama {
     --main-color: #e90979;
     --main-color-dark: #e90979cc;
@@ -490,17 +501,30 @@ body {
     color: var(--link-color);
   }
   .button {
-    border-radius: 2px;
+    display: inline-block;
+  }
+  .white-btn {
     cursor: pointer;
-    &.black-btn {
-      border: 1px solid var(--black-color);
-      background: var(--black-color);
-      color: #fff;
+    border-radius: 2px;
+    border: 1px solid var(--main-color);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--main-color);
+  }
+  .main-btn {
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid var(--main-color);
+    background-color: var(--main-color);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    transition: opacity 0.1s;
+    &:hover {
+      opacity: 0.8;
     }
-    &.white-btn {
-      border: 1px solid var(--black-color);
-      background: #fff;
-      color: var(--black-color);
+    &:active {
+      opacity: 1;
     }
   }
   .el-table {

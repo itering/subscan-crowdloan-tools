@@ -13,19 +13,6 @@
         >
           <el-table :data="filteredParachain" style="width: 100%">
             <el-table-column
-              style="background: #fff"
-              min-width="40"
-              prop="rank_validator"
-              label=""
-            >
-              <template slot-scope="scope">
-                <el-checkbox
-                  :key="scope.row.para_id"
-                  :label="scope.row.para_id"
-                ></el-checkbox>
-              </template>
-            </el-table-column>
-            <el-table-column
               min-width="75"
               prop="fund_id"
               :label="$t('parachain.fund_id')"
@@ -215,12 +202,13 @@
         center
         class="contribute-dialog"
       >
-        <el-form :model="form" label-position="top">
+        <el-form :model="form" label-position="top" class="contribute-form">
           <el-form-item
             :label="$t('parachain.para_id')"
             :label-width="formLabelWidth"
+            class="para-select"
           >
-            <el-input v-model="form.paraId" size="small" disabled>
+            <el-input :value="paraName" size="small" disabled>
               <template slot="append">
                 <el-dropdown trigger="click" @command="handleParaIdChange">
                   <span>
@@ -240,10 +228,10 @@
                     </div>
                     <div class="dropdown-scroll-list">
                       <el-dropdown-item
-                        :command="item.value"
+                        :command="item.para_id"
                         class="menu-item"
                         v-for="item in filteredParaList"
-                        :key="item.value"
+                        :key="item.para_id"
                       >
                         <span class="prefix-name">{{
                           `${item.para_id} (${item.name})`
@@ -256,19 +244,34 @@
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('value')" :label-width="formLabelWidth">
-            <el-input v-model="form.contributeAmount"></el-input>
+            <el-input v-model="form.contributeAmount">
+              <template slot="append">{{
+                tokenDetail && tokenDetail.symbol
+              }}</template>
+            </el-input>
           </el-form-item>
-          <el-form-item :label="$t('memo')" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off"></el-input>
+          <div class="memo-switch">
+            <el-switch
+              v-model="form.hasMemo"
+              :inactive-text="$t('contribute.add_memo')"
+            >
+            </el-switch>
+          </div>
+          <el-form-item
+            v-if="form.hasMemo"
+            :label="$t('memo')"
+            :label-width="formLabelWidth"
+          >
+            <el-input v-model="form.memo" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="dialogVisible = false">{{
-            $t("contribute.index")
-          }}</el-button>
-          <el-button @click="dialogVisible = false">{{
-            $t("cancel")
-          }}</el-button>
+          <div class="button main-btn" @click="dialogVisible = false">
+            {{ $t("contribute.index") }}
+          </div>
+          <div class="button white-btn" @click="dialogVisible = false">
+            {{ $t("cancel") }}
+          </div>
         </span>
       </el-dialog>
       <div class="fixed-panel">
@@ -397,10 +400,12 @@ export default {
       checkedValidators: [],
       api: null,
       extensionAccountList: [],
-      keyword: '',
+      keyword: "",
       form: {
-        paraId: '',
-        contributeAmount: '',
+        hasMemo: false,
+        memo: "",
+        paraId: "",
+        contributeAmount: "",
       },
       formLabelWidth: "120px",
       signer: {
@@ -435,17 +440,33 @@ export default {
     tokenDetail() {
       return getTokenDetail(this.token, this.sourceSelected, this.currency);
     },
+    paraName() {
+      let result = "";
+      _.forEach(this.sortedParachain, (item) => {
+        if (item.para_id == this.form.paraId) {
+          result = this.form.paraId + " (" + item.name + ")";
+          return false;
+        }
+      });
+      return result;
+    },
     filteredParachain() {
       return this.sortedParachain;
     },
     filteredParaList() {
       let keyWord = this.keyword.toLowerCase();
       return this.sortedParachain.filter(function (parachain) {
-        if (parachain && ('' + parachain.para_id).replace(' ','').toLowerCase().includes(keyWord)) {
+        if (
+          parachain &&
+          ("" + parachain.para_id)
+            .replace(" ", "")
+            .toLowerCase()
+            .includes(keyWord)
+        ) {
           return true;
         }
         let name = parachain && parachain.name;
-        if (name && (name.toLowerCase()).includes(keyWord)) {
+        if (name && name.toLowerCase().includes(keyWord)) {
           return true;
         }
         return false;
@@ -612,8 +633,8 @@ export default {
       });
       return result;
     },
-    handleParaIdChange() {
-
+    handleParaIdChange(val) {
+      this.form.paraId = val;
     },
     handleRuntimeExpand(row) {
       this.$router.push(`/crowdloan/${row.fund_id}`);
@@ -642,7 +663,11 @@ export default {
         const paraId = this.checkedValidators && this.checkedValidators[0];
         this.$polkaApi.setSigner(injector.signer);
         const unsub = await this.$polkaApi.tx.crowdloan
-          .contribute(paraId, this.inputToKSMBN(this.form.contributeAmount), null)
+          .contribute(
+            paraId,
+            this.inputToKSMBN(this.form.contributeAmount),
+            null
+          )
           .signAndSend(this.signer, ({ events = [], status }) => {
             // if (status.isFinalized) {
             events.forEach(({ event: { method, section } }) => {
@@ -953,12 +978,74 @@ export default {
     }
   }
 }
-</style>
-<style lang="scss">
-.contribute-dropdown-item {
-  height: auto;
-  line-height: auto;
-  padding: 5px 20px;
+.contribute-dialog {
+  /deep/ .el-dialog__title {
+    font-weight: bold;
+  }
+  /deep/ .el-dialog__body {
+    padding: 25px 0 5px 0;
+  }
+  .contribute-form {
+    padding: 0 75px;
+    .memo-switch {
+      margin-bottom: 15px;
+      text-align: right;
+      /deep/ .el-switch__label {
+        color: var(--black-color);
+        font-weight: bold;
+      }
+      /deep/ .el-switch.is-checked .el-switch__core {
+        border-color: var(--main-color);
+        background-color: var(--main-color);
+      }
+    }
+    /deep/ .el-from-item {
+      margin-bottom: 20px;
+    }
+    /deep/ .el-form-item__label {
+      font-weight: bold;
+      line-height: 20px;
+      padding: 0 0 5px;
+      color: var(--black-color);
+    }
+    .para-select {
+      /deep/ .el-input {
+        input {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--main-color);
+          cursor: default;
+          background-color: var(--white);
+        }
+        .el-input-group__append {
+          padding: 0;
+          cursor: pointer;
+          span {
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 10px;
+          }
+        }
+        .el-input__inner,
+        .el-input__inner:focus,
+        .el-input__inner:hover {
+          border-color: var(--input-border-color);
+        }
+      }
+    }
+  }
+  /deep/ .el-dialog__footer {
+    padding: 5px 20px 30px;
+    .button {
+      width: 140px;
+      height: 32px;
+      line-height: 32px;
+      & + .button {
+        margin-left: 20px;
+      }
+    }
+  }
 }
 .contribute-wrapper {
   .el-checkbox {
@@ -1042,6 +1129,39 @@ export default {
           padding: 0;
         }
       }
+    }
+  }
+}
+</style>
+<style lang="scss">
+.contribute-dropdown-item {
+  height: auto;
+  line-height: auto;
+  padding: 5px 20px;
+}
+.version-dropdown-menu.el-dropdown-menu {
+  // max-height: 230px;
+  // overflow: auto;
+  .dropdown-scroll-list {
+    margin-top: 10px;
+    max-height: 230px;
+    overflow: auto;
+  }
+  .prefix-search-input {
+    margin: 0 10px;
+  }
+  .menu-item {
+    text-align: center;
+    color: var(--menu-item-color);
+    cursor: pointer;
+    outline: none;
+    &:hover {
+      color: var(--menu-item-hover-color);
+      text-decoration: none;
+      background-color: var(--main-bg);
+    }
+    .prefix-name {
+      // text-transform: capitalize;
     }
   }
 }
