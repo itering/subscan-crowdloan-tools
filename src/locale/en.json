@@ -267,6 +267,7 @@
   "transaction_waiting_title": "Waiting",
   "truth_label": "Yes",
   "unavailable": "Unavailable",
+  "unknown": "Unknown",
   "value": "Value",
   "version_history": "Version History",
   "view_in_subscan": "View on Subscan"

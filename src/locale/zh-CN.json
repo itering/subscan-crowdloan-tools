@@ -261,6 +261,7 @@
   "transaction_waiting_title": "等待",
   "truth_label": "是",
   "unavailable": "不可用",
+  "unknown": "未知",
   "value": "数量",
   "version_history": "版本历史",
   "view_in_subscan": "去 Subscan 查看"
