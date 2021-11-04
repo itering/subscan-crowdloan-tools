@@ -7,7 +7,7 @@ export default [{
   {
     name: "crowdloan",
     path: "/crowdloan",
-    component: () => import( /* webpackChunkName: "createWallet" */ "Views/Crowdloan/index")
+    component: () => import( /* webpackChunkName: "crowdloan" */ "Views/Crowdloan/index")
   },
   {
     name: "404",

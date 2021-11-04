@@ -1,6 +1,12 @@
 <template>
   <div class="contribute-wrapper">
     <div class="subscan-container">
+      <div class="metadata-chart-wrapper space-between">
+        <meta-data class="metadata-component" />
+      </div>
+      <div class="countdown-wrapper space-between">
+        <Countdown class="metadata-component" />
+      </div>
       <div class="table-top space-between align-items-center">
         <div class="for-block align-items-center">
           <div>{{ $t("parachain.crowdloan") }}</div>
@@ -357,6 +363,8 @@
   </div>
 </template>
 <script>
+import MetaData from "./metadata";
+import Countdown from "./countdown";
 import unknownLogo from "Assets/images/unknown.png";
 import Identicon from "@polkadot/vue-identicon";
 import _ from "lodash";
@@ -395,6 +403,8 @@ export default {
   components: {
     Identicon,
     // AddressDisplay,
+    MetaData,
+    Countdown,
     Pagination,
     Balances,
   },
@@ -539,6 +549,7 @@ export default {
   methods: {
     isMobile,
     accuracyFormat,
+    fmtNumber4Digits,
     parseLeaseIdx2Time,
     getTokenDecimal,
     init() {
@@ -594,10 +605,10 @@ export default {
       let addressList = _.map(this.extensionAccountList, "address");
       this.$polkaApi.query.system.account.multi(addressList, (balances) => {
         _.forEach(balances, ({ data }, index) => {
-          this.extensionAccountList[index]["balance"] = accuracyFormat(
+          this.extensionAccountList[index]["balance"] = fmtNumber4Digits(accuracyFormat(
             data.free.toString(),
             this.currencyTokenDetail.token_decimals
-          );
+          ), 4);
         });
       });
     },
@@ -840,6 +851,16 @@ export default {
     display: none;
   }
   .subscan-container {
+    .metadata-chart-wrapper {
+      height: 116px;
+      margin-bottom: 20px;
+      .metadata-component {
+        width: 100%;
+      }
+    }
+    .countdown-wrapper {
+      margin-bottom: 20px;
+    }
     .fixed-panel {
       position: absolute;
       bottom: 0;
@@ -998,6 +1019,18 @@ export default {
   }
   @media screen and (max-width: $screen-xs) {
     .subscan-container {
+      .metadata-chart-wrapper {
+        height: inherit;
+        flex-direction: column;
+        .metadata-component {
+          width: 100%;
+        }
+        .chart-component {
+          margin-top: 20px;
+          width: 100%;
+          height: 196px;
+        }
+      }
       .fixed-panel {
         .extention-section {
           display: flex;

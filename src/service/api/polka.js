@@ -33,4 +33,12 @@ export default [
     path: '/scan/parachain/meta',
     options: {},
   },
+  {
+    name: 'getParachainAuctions',
+    method: 'POST',
+    desc: '获取parachain的auctions信息(1:Started;2:Closed)',
+    baseURL: '',
+    path: '/scan/parachain/auctions',
+    options: {},
+  },
 ];

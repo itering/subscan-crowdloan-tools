@@ -138,9 +138,13 @@ export default {
     },
     async initParachain() {
       await this.getParachainMetaData();
+      await this.getCurrentAuction();
     },
     async getParachainMetaData() {
-      await Promise.all([this.$store.dispatch("SetParachainMetadata")]);
+      await Promise.all([this.$store.dispatch('SetParachainMetadata')]);
+    },
+    async getCurrentAuction() {
+      await Promise.all([this.$store.dispatch('SetCurrentAuction')]);
     },
     async getExtensionAccounts() {
       this.$store.dispatch("SetExtensionAccountList").then(() => {
