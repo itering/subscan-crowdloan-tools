@@ -505,6 +505,7 @@ export default {
         height: 30px;
         line-height: 30px;
         color: #fff;
+        font-size: 12px;
         // margin-right: 5px;
         border: 1px solid #fff;
       }

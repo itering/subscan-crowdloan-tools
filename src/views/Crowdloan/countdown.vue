@@ -21,12 +21,13 @@
         <div v-else>{{ $t('parachain.auction') }}</div>
       </div>
       <div class="btns">
-        <router-link to="/auction" class="btn">{{ $t('parachain.auction_history') }}</router-link>
-        <router-link
+        <a class="btn" target="_blank" rel="noopener noreferrer" :href="`${networkDomain}/auction`">{{ $t('parachain.auction_history') }}</a>
+        <a
           v-if="parachainMetadata.auction_count"
-          :to="`/auction/${parachainMetadata.auction_count - 1 || 1}`"
+          :href="`${networkDomain}/auction/${parachainMetadata.auction_count - 1 || 1}`"
           class="btn"
-          >{{ $t('parachain.last_auction') }}</router-link
+          target="_blank" rel="noopener noreferrer"
+          >{{ $t('parachain.last_auction') }}</a
         >
       </div>
     </div>
@@ -89,7 +90,7 @@
           <div class="start">{{ $t('parachain.auction_start') }}</div>
           <div class="period">
             {{ $t('parachain.end_period') }}
-            <el-tooltip class="item" effect="light" :content="$t('parachain.end_period_tip')" placement="top-start">
+            <el-tooltip class="item" effect="light" :content="$t('parachain.end_period_tip')" placement="top">
               <icon-svg class="iconfont" icon-class="question" />
             </el-tooltip>
           </div>
@@ -102,7 +103,7 @@
             class="item"
             effect="light"
             :content="currentAuction.start_block | parseBlock2Time(metadata.blockNum)"
-            placement="top-start"
+            placement="top"
           >
             <div class="start">{{ $t('parachain.block') }}{{ currentAuction.start_block | toThousandslsFilter }}</div>
           </el-tooltip>
@@ -110,7 +111,7 @@
             class="item"
             effect="light"
             :content="currentAuction.early_end_block | parseBlock2Time(metadata.blockNum)"
-            placement="top-start"
+            placement="top"
           >
             <div class="period">
               {{ $t('parachain.block') }}{{ currentAuction.early_end_block | toThousandslsFilter }}
@@ -120,7 +121,7 @@
             class="item"
             effect="light"
             :content="currentAuction.end_block | parseBlock2Time(metadata.blockNum)"
-            placement="top-start"
+            placement="top"
           >
             <div class="end">{{ $t('parachain.block') }}{{ currentAuction.end_block | toThousandslsFilter }}</div>
           </el-tooltip>
@@ -174,6 +175,9 @@ export default {
       currentTime: (state) => state.global.currentTime,
       sourceSelected: (state) => state.global.sourceSelected,
     }),
+    networkDomain() {
+      return this.$const[`SYMBOL/${this.sourceSelected}`]["domain"]["value"];
+    },
     cssVars() {
       return {
         '--period-progress': '34%',
