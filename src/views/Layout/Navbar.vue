@@ -384,11 +384,18 @@ export default {
       return formatSymbol(module, this.$const, this.sourceSelected, params);
     },
     changeSource(value) {
-      // this.$store.dispatch("SetSourceSelected", value);
-      this.$router.push({
-        query: { network: value },
-      });
-      window.location.reload();
+      if (value !== this.sourceSelected) {
+        this.$store.dispatch("SetSourceSelected", value);
+        this.$router.push({
+          query: { network: value },
+        });
+        try {
+          this.$polkaApi && this.$polkaApi.disconnect();
+        } catch (e) {
+          console.log(e);
+        }
+        window.location.reload();
+      }
     },
     formatSource(module, type) {
       let source = this.$const[`SYMBOL/${this.sourceSelected}`];
