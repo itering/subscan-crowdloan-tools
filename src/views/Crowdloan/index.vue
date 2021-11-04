@@ -518,6 +518,7 @@ export default {
           icon = switchKusama;
           break;
         default:
+          icon = switchKusama;
           break;
       }
       return icon;

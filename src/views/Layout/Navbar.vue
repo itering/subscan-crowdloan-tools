@@ -384,7 +384,7 @@ export default {
       return formatSymbol(module, this.$const, this.sourceSelected, params);
     },
     changeSource(value) {
-      this.$store.dispatch("SetSourceSelected", value);
+      // this.$store.dispatch("SetSourceSelected", value);
       this.$router.push({
         query: { network: value },
       });
