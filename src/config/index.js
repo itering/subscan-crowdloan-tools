@@ -34,9 +34,9 @@ function getBaseURL() {
   if (process.env.NODE_ENV === 'production') {
     if (location && location.origin) {
       if (location.search.indexOf('kusama') > 0) {
-        result = "https://kusama.webapi.subscan.io";
+        result = "https://kusama.webapi.subscan.io/api";
       } else {
-        result = "https://polkadot.webapi.subscan.io";
+        result = "https://polkadot.webapi.subscan.io/api";
       }
     }
   }

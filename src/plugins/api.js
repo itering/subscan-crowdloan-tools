@@ -59,11 +59,6 @@ class MakeApi {
             url,
             desc,
             method,
-            withCredentials: true,
-            // headers: {
-            //     "Access-Control-Allow-Origin": "*",
-            //     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            // },
             baseURL: baseURLValue
           };
           return axios(
