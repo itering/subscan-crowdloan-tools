@@ -26,12 +26,13 @@
             >
               <template slot-scope="scope">
                 <div class="link para-id">
-                  <router-link
+                  <a
+                    target="_blank" rel="noopener noreferrer"
+                    :href="`${networkDomain}/parachain/${scope.row.para_id}`"
                     class="project"
-                    :to="`/parachain/${scope.row.para_id}`"
                   >
                     <span class="para-id">{{ scope.row.para_id }}</span>
-                  </router-link>
+                  </a>
                 </div>
               </template>
             </el-table-column>
@@ -43,9 +44,10 @@
             >
               <template slot-scope="scope">
                 <div class="link para-id">
-                  <router-link
+                  <a
+                    target="_blank" rel="noopener noreferrer"
+                    :href="`${networkDomain}/parachain/${scope.row.para_id}`"
                     class="project"
-                    :to="`/parachain/${scope.row.para_id}`"
                   >
                     <img
                       v-if="scope.row.logo"
@@ -54,7 +56,7 @@
                     />
                     <img v-else :src="unknownLogo" :alt="scope.row.name" />
                     <span class="project-name">{{ scope.row.name }}</span>
-                  </router-link>
+                  </a>
                 </div>
               </template>
             </el-table-column>
@@ -175,10 +177,12 @@
             >
               <template slot-scope="scope">
                 <div class="link" v-if="scope.row.contributors">
-                  <router-link
-                    :to="`/crowdloan/${scope.row.fund_id}?tab=contributor`"
-                    >{{ scope.row.contributors }}</router-link
+                  <a
+                    target="_blank" rel="noopener noreferrer"
+                    :href="`${networkDomain}/crowdloan/${scope.row.fund_id}?tab=contributor`"
                   >
+                    {{ scope.row.contributors }}
+                  </a>
                 </div>
                 <div v-else>-</div>
               </template>
@@ -470,6 +474,9 @@ export default {
     tokenDetail() {
       return getTokenDetail(this.token, this.sourceSelected, this.currency);
     },
+    networkDomain() {
+      return this.$const[`SYMBOL/${this.sourceSelected}`]["domain"]["value"];
+    },
     amountPlaceholder() {
       let result = "0";
       _.forEach(this.extensionAccountList, (account) => {
@@ -692,7 +699,7 @@ export default {
       this.form.paraId = val;
     },
     handleRuntimeExpand(row) {
-      this.$router.push(`/crowdloan/${row.fund_id}`);
+      window.open(`${this.networkDomain}/crowdloan/${row.fund_id}`);
     },
     tableRowStyle() {
       return "background-color:pink;font-size:15px;";

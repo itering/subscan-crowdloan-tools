@@ -65,21 +65,31 @@ const global = {
       commit, state
     }) {
       return new Promise((resolve, reject) => {
-        if (state.extensionAccountList.length > 0) {
-          resolve(state.extensionAccountList);
-          return;
-        } else {
-          web3Accounts().then((res)=>{
-            const allAccounts = res || [];
-            _.forEach(allAccounts, account => {
-              account.address = encodeAddressByType(account.address, state.chainToken.ss58Format);
-            })
-            commit("SET_EXTENSION_ACCOUNT_LIST", allAccounts);
-            resolve(allAccounts);
-          }).catch((err)=>{
-            reject(err);
-          });
-        }
+        web3Accounts().then((res)=>{
+          const allAccounts = res || [];
+          _.forEach(allAccounts, account => {
+            account.address = encodeAddressByType(account.address, state.chainToken.ss58Format);
+          })
+          commit("SET_EXTENSION_ACCOUNT_LIST", allAccounts);
+          resolve(allAccounts);
+        }).catch((err)=>{
+          reject(err);
+        });
+        // if (state.extensionAccountList.length > 0) {
+        //   resolve(state.extensionAccountList);
+        //   return;
+        // } else {
+        //   web3Accounts().then((res)=>{
+        //     const allAccounts = res || [];
+        //     _.forEach(allAccounts, account => {
+        //       account.address = encodeAddressByType(account.address, state.chainToken.ss58Format);
+        //     })
+        //     commit("SET_EXTENSION_ACCOUNT_LIST", allAccounts);
+        //     resolve(allAccounts);
+        //   }).catch((err)=>{
+        //     reject(err);
+        //   });
+        // }
       })
     },
     SetIsPolkadotConnect({

@@ -9,7 +9,7 @@ export function toThousandslsFilter(num) {
 
 export function accuracyFormat(num, accuracy) {
   if (accuracy) {
-    return bn2str(bnShift(num, -accuracy));
+    return bn2str(bnShift(num, -(accuracy)));
   } else if (+accuracy === 0){
     return num;
   } else {
