@@ -588,7 +588,7 @@ export default {
         this.signer = allAccounts[0].address || "";
       }
       this.isApiReady = true;
-      // this.getAccountBalance();
+      this.getAccountBalance();
     },
     getAccountBalance() {
       let addressList = _.map(this.extensionAccountList, "address");
