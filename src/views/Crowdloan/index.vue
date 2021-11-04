@@ -1026,6 +1026,7 @@ export default {
     }
   }
   @media screen and (max-width: $screen-xs) {
+    padding-bottom: 30px;
     .subscan-container {
       .metadata-chart-wrapper {
         height: inherit;
@@ -1040,6 +1041,7 @@ export default {
         }
       }
       .fixed-panel {
+        display: none;
         .extention-section {
           display: flex;
           align-items: center;

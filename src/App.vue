@@ -35,7 +35,7 @@
             class="downloadDialog"
             title=""
             :visible.sync="dialogVisible"
-            width="560px"
+            :width="getDialogWidth()"
           >
             <div class="title">{{ $t("error.index") }}</div>
             <div class="text">{{ $t("polkadot.download_tip") }}</div>
@@ -81,6 +81,7 @@ import { web3Enable, isWeb3Injected } from "@polkadot/extension-dapp";
 const queryString = require("query-string");
 import { mapState } from "vuex";
 import { NETWORK_LIST } from "Config";
+import { isMobile } from "Utils/tools";
 export default {
   name: "App",
   components: {
@@ -131,6 +132,7 @@ export default {
     document.getElementsByTagName("body")[0].className = this.sourceSelected;
   },
   methods: {
+    isMobile,
     init() {
       this.initPolkadotJs();
       this.initParachain();
@@ -157,6 +159,13 @@ export default {
       const parsedObj = queryString.parse(location.search);
       const networkParam = parsedObj["network"] || "polkadot";
       this.$store.dispatch("SetSourceSelected", networkParam);
+    },
+    getDialogWidth() {
+      if (this.isMobile()) {
+        return "290px";
+      } else {
+        return "560px";
+      }
     },
     async initChainState() {
       const chainState = await this.$polkaApi.rpc.system.properties();
@@ -392,6 +401,12 @@ export default {
     }
   }
   @media screen and (max-width:$screen-xs) {
+    .download {
+      display: none;
+    }
+    .connect {
+      padding-top: 40px;
+    }
     .subscan-card {
       flex: 1;
     }
