@@ -373,7 +373,7 @@ import unknownLogo from "Assets/images/unknown.png";
 import Identicon from "@polkadot/vue-identicon";
 import _ from "lodash";
 // import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Accounts, web3FromAddress } from "@polkadot/extension-dapp";
+import { web3FromAddress } from "@polkadot/extension-dapp";
 import { mapState } from "vuex";
 // import AddressDisplay from "@/views/Components/AddressDisplay";
 import Balances from "@/views/Components/Balances";
@@ -381,7 +381,7 @@ import Pagination from "@/views/Components/Pagination";
 import BN from "bn.js";
 import Bignumber from "bignumber.js";
 // import { ENDPOINTS_MAP } from 'Config';
-import { encodeAddress } from "@polkadot/util-crypto";
+// import { encodeAddress } from "@polkadot/util-crypto";
 import switchKusama from "../../assets/images/switch-pink.png";
 import {
   timeAgo,
@@ -429,11 +429,10 @@ export default {
       total: 0,
       pageSize: 25,
       currentPage: 0,
-      currency: "ring",
+      currency: "",
       allValidators: [],
       checkedValidators: [],
       api: null,
-      extensionAccountList: [],
       keyword: "",
       form: {
         hasMemo: false,
@@ -442,12 +441,6 @@ export default {
         contributeAmount: "",
       },
       formLabelWidth: "120px",
-      signer: {
-        address: "",
-        meta: {
-          name: "",
-        },
-      },
     };
   },
   watch: {},
@@ -469,6 +462,8 @@ export default {
       token: (state) => state.polka.token,
       metadata: (state) => state.polka.metadata,
       parachainMetadata: (state) => state.polka.parachainMetadata,
+      extensionAccountList: (state) => state.global.extensionAccountList,
+      signer: (state) => state.global.signer,
       currentTime: (state) => state.global.currentTime,
     }),
     tokenDetail() {
@@ -542,7 +537,6 @@ export default {
     // this.scrollThrottle = _.throttle(this.calcPos, 200);
     this.debounceFilter = _.debounce(this.filterByName, 500);
     this.init();
-    this.initPolkadotJs();
   },
   mounted() {
     // this.addVirtualTable();
@@ -599,26 +593,6 @@ export default {
     },
     filterByName() {
       this.currentChange(1);
-    },
-    async initPolkadotJs() {
-      const allAccounts = await web3Accounts();
-      this.extensionAccountList = allAccounts || [];
-      if (allAccounts && allAccounts.length > 0) {
-        this.signer = allAccounts[0].address || "";
-      }
-      this.isApiReady = true;
-      this.getAccountBalance();
-    },
-    getAccountBalance() {
-      let addressList = _.map(this.extensionAccountList, "address");
-      this.$polkaApi.query.system.account.multi(addressList, (balances) => {
-        _.forEach(balances, ({ data }, index) => {
-          this.extensionAccountList[index]["balance"] = fmtNumber4Digits(accuracyFormat(
-            data.free.toString(),
-            this.currencyTokenDetail.token_decimals
-          ), 4);
-        });
-      });
     },
     getWalletUrl() {
       return "https://polkadot.js.org/apps/";
@@ -794,7 +768,8 @@ export default {
       if (!address) {
         return "";
       }
-      return encodeAddress(address, this.metadata.addressType);
+      return "";
+      // return encodeAddress(address, this.metadata.addressType);
     },
   },
 };
@@ -853,7 +828,7 @@ export default {
   }
 }
 .contribute-wrapper {
-  padding-bottom: 100px;
+  padding-bottom: 20px;
   padding-top: 20px;
   .el-checkbox__label {
     display: none;
@@ -870,6 +845,8 @@ export default {
       margin-bottom: 20px;
     }
     .fixed-panel {
+      // display: flex;
+      display: none;
       position: absolute;
       bottom: 0;
       left: 0;
@@ -879,7 +856,6 @@ export default {
       z-index: 100;
       box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.05);
       border: 1px solid rgba(231, 234, 243, 0.05);
-      display: flex;
       align-items: center;
       .el-select {
         height: 1px;

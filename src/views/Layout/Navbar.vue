@@ -173,76 +173,58 @@
     </nav>
     <nav v-else class="subscan-container align-items-center">
       <router-link class="logo" to="/" tag="a"></router-link>
-      <div
-        class="polkadot-status"
-        :class="isPolkadotConnect ? 'connected' : ''"
-      ></div>
+      <div class="polkadot-account-section">
+        <div
+          class="polkadot-status"
+          :class="isPolkadotConnect ? 'connected' : ''"
+        ></div>
+        <div class="signer" v-if="signer">
+          <el-select
+            :value="signer"
+            placeholder=""
+            @change="changeSigner"
+            ref="extensionAccountSelect"
+          >
+            <el-option
+              class="contribute-dropdown-item"
+              v-for="item in extensionAccountList"
+              :key="item.address"
+              :label="item.address"
+              :value="item.address"
+            >
+              <div class="account-box">
+                <address-display
+                  customCls="address-display-cls"
+                  :hasAddressWrapper="true"
+                  :hasHashFormat="true"
+                  :isVertical="true"
+                  :iconSize="30"
+                  :address="item.address"
+                  :hasDisplayNameInfo="true"
+                  :hasCopyBtn="false"
+                  :displayNameInfo="getAccountDisplayInfo(item)"
+                ></address-display>
+              </div>
+            </el-option>
+          </el-select>
+          <div class="signer-account" @click="selectExtensionAccount">
+            <address-display
+              customCls="address-display-cls"
+              :hasHashFormat="true"
+              :iconSize="22"
+              :address="signer"
+              :hasDisplayNameInfo="true"
+              :hasCopyBtn="false"
+            ></address-display>
+            <icon-svg class="icon" icon-class="switch-white" />
+          </div>
+        </div>
+        <span class="available-amount" v-if="signer">{{amountPlaceholder}}</span>
+      </div>
       <div class="rate"></div>
       <div class="right-menu align-items-center">
         <ul class="nav-item-list align-items-center">
           <a class="nav-item" :href="networkHref">{{ $t("explorer") }}</a>
-          <!-- <div class="nav-item">
-            <el-popover placement="bottom" width="260" trigger="click">
-              <div class="polka-account-list">
-                <div v-if="!hasExtensionAccount" class="empty">
-                  <div class="avatar">
-                    <icon-svg icon-class="user" class="icon avatar-icon" />
-                  </div>
-                  <div>{{ $t("polkadot.none") }}</div>
-                  <div class="button" @click="getExtensionAccounts">
-                    {{ $t("refresh") }}
-                  </div>
-                </div>
-                <div v-else>
-                  <div
-                    class="account"
-                    v-for="item in extensionAccountList"
-                    :key="item.address"
-                  >
-                    <address-display
-                      customCls="address-display-cls"
-                      :hasAddressWrapper="true"
-                      :hasHashFormat="true"
-                      :isVertical="true"
-                      :iconSize="30"
-                      :address="item.address"
-                      :hasDisplayNameInfo="true"
-                      :displayNameInfo="getAccountDisplayInfo(item)"
-                    ></address-display>
-                  </div>
-                  <div class="button" @click="getExtensionAccounts">
-                    {{ $t("refresh") }}
-                  </div>
-                </div>
-              </div>
-              <div slot="reference">
-                {{ $t("accounts") }}
-                <span>
-                  <i class="el-icon-caret-bottom"></i>
-                </span>
-              </div>
-            </el-popover>
-          </div> -->
-          <!-- <el-dropdown class="account-dropdown" trigger="click">
-            <li class="nav-item">
-              {{ $t("language_demo") }}
-              <span>
-                <i class="el-icon-caret-bottom"></i>
-              </span>
-            </li>
-            <el-dropdown-menu slot="dropdown" class="account-dropdown-menu">
-              <el-dropdown-item
-                class="menu-item"
-                @click.native="changeLanguage('zh-CN')"
-                >简体中文</el-dropdown-item
-              >
-              <el-dropdown-item
-                class="menu-item"
-                @click.native="changeLanguage('en')"
-                >English</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown> -->
         </ul>
         <el-dropdown class="dropdown" trigger="click">
           <span class="el-dropdown-link align-items-center">
@@ -287,14 +269,15 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import { formatSymbol, isMobile } from "Utils/tools";
-import { encodeAddressByType } from "Utils/filters";
-// import AddressDisplay from "@/views/Components/AddressDisplay";
+import { fmtNumber4Digits } from "Utils/format";
+import { formatSymbol, getTokenDetail, isMobile, getCurrencyTokenDetail } from "Utils/tools";
+import { encodeAddressByType, accuracyFormat } from "Utils/filters";
+import AddressDisplay from "@/views/Components/AddressDisplay";
 import _ from "lodash";
 export default {
   name: "NavBar",
   components: {
-    // AddressDisplay,
+    AddressDisplay,
   },
   filters: {
     encodeAddressByType,
@@ -315,6 +298,27 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      metadata: (state) => state.polka.metadata,
+      sourceSelected: (state) => state.global.sourceSelected,
+      token: (state) => state.polka.token,
+      extensionAccountList: (state) => state.global.extensionAccountList,
+      signer: (state) => state.global.signer,
+      isPolkadotConnect: (state) => state.global.isPolkadotConnect,
+      language: (state) => state.global.language,
+    }),
+    tokenDetail() {
+      return getTokenDetail(this.token, this.sourceSelected, this.currency);
+    },
+    amountPlaceholder() {
+      let result = "0";
+      _.forEach(this.extensionAccountList, (account) => {
+        if (account.address === this.signer) {
+          result = account.balance || 0;
+        }
+      });
+      return result + ' ' + (this.tokenDetail.symbol||'');
+    },
     sourceSelectedValue() {
       let source = this.sourceList.find((item) => {
         return item.value === this.sourceSelected;
@@ -349,19 +353,21 @@ export default {
     networkHref() {
       return this.getSourceHref(this.sourceSelected);
     },
-    ...mapState({
-      metadata: (state) => state.polka.metadata,
-      sourceSelected: (state) => state.global.sourceSelected,
-      extensionAccountList: (state) => state.global.extensionAccountList,
-      isPolkadotConnect: (state) => state.global.isPolkadotConnect,
-      language: (state) => state.global.language,
-    }),
+    currencyTokenDetail() {
+      return getCurrencyTokenDetail(
+        this.token,
+        this.sourceSelected,
+        this.currency
+      );
+    },
   },
   created() {
     this.init();
   },
   beforeDestroy() {},
   methods: {
+    accuracyFormat,
+    fmtNumber4Digits,
     async init() {
       await Promise.all([
         this.$store.dispatch("SetMetadata"),
@@ -370,12 +376,35 @@ export default {
     },
     async getExtensionAccounts() {
       this.$store.dispatch("SetExtensionAccountList");
+      this.getAccountBalance();
+    },
+    changeSigner(signer) {
+      this.$store.commit("SET_SIGNER", signer);
+    },
+    getAccountBalance() {
+      let accountList = this.extensionAccountList;
+      let addressList = _.map(accountList, "address");
+      this.$polkaApi.query.system.account.multi(addressList, (balances) => {
+        _.forEach(balances, ({ data }, index) => {
+          accountList[index]["balance"] = fmtNumber4Digits(
+            accuracyFormat(
+              data.free.toString(),
+              this.currencyTokenDetail.token_decimals
+            ),
+            4
+          );
+        });
+        this.$store.commit("SET_EXTENSION_ACCOUNT_LIST", accountList);
+      });
     },
     getAccountDisplayInfo(item) {
       return {
         address: item.address,
         display: item.meta.name,
       };
+    },
+    selectExtensionAccount() {
+      this.$refs["extensionAccountSelect"].toggleMenu();
     },
     isMobile() {
       return isMobile();
@@ -445,9 +474,48 @@ export default {
     .logo {
       height: 25px;
       width: 119px;
-      background: url('../../assets/images/logo@2x.png') no-repeat center center;
+      background: url("../../assets/images/logo@2x.png") no-repeat center center;
       background-size: cover;
       cursor: pointer;
+    }
+    .polkadot-account-section {
+      display: flex;
+      align-items: center;
+      .signer {
+        position: relative;
+        cursor: pointer;
+        margin: 0 10px;
+        border-radius: 2px;
+        border: 1px solid #ffffff;
+        padding: 2px 6px 0;
+        .signer-account {
+          display: flex;
+          align-items: center;
+          /deep/ a {
+            pointer-events: none;
+            color: var(--white);
+          }
+        }
+        .el-select {
+          height: 1px;
+          width: 1px;
+          overflow: hidden;
+          position: absolute;
+          top: 0;
+          left: 10px;
+        }
+        .extention-section {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 0;
+          position: relative;
+        }
+        .icon {
+          margin-left: 5px;
+          font-size: 16px;
+        }
+      }
     }
     .polkadot-status {
       width: 32px;
@@ -760,7 +828,7 @@ export default {
   }
 }
 .polka-account-list {
-  padding: 20px;
+  padding: 10px;
   max-height: 400px;
   overflow: scroll;
   .empty {
@@ -795,7 +863,7 @@ export default {
       }
     }
     .address-wrapper-address {
-      width: 124px;
+      width: 160px;
       pointer-events: none;
     }
   }
@@ -904,6 +972,13 @@ export default {
     .el-collapse-item__content {
       max-height: 200px;
       overflow: scroll;
+    }
+  }
+}
+.el-select-dropdown {
+  .account-box {
+    a {
+      pointer-events: none;
     }
   }
 }

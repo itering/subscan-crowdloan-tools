@@ -31,6 +31,7 @@ const global = {
     isPolkadotConnect: false,
     isKeyringLoaded: false,
     chainToken: {},
+    signer: ""
   },
   mutations: {
     SET_IS_POLKADOT_CONNECT: (state, status) => {
@@ -38,6 +39,9 @@ const global = {
     },
     SET_EXTENSION_ACCOUNT_LIST: (state, list) => {
       state.extensionAccountList = list;
+    },
+    SET_SIGNER: (state, signer) => {
+      state.signer = signer;
     },
     SET_KEYRING_STATUS: (state, status) => {
       state.isKeyringLoaded = status;
@@ -61,16 +65,25 @@ const global = {
         expires: 30
       });
     },
+    SetSigner({
+      commit
+    }, address) {
+      commit("SET_SIGNER", address);
+    },
     SetExtensionAccountList({
       commit, state
     }) {
       return new Promise((resolve, reject) => {
         web3Accounts().then((res)=>{
-          const allAccounts = res || [];
+          let allAccounts = res || [];
           _.forEach(allAccounts, account => {
             account.address = encodeAddressByType(account.address, state.chainToken.ss58Format);
           })
           commit("SET_EXTENSION_ACCOUNT_LIST", allAccounts);
+          if (allAccounts && allAccounts.length > 0) {
+            let signer = allAccounts[0].address || "";
+            commit("SET_SIGNER", signer);
+          }
           resolve(allAccounts);
         }).catch((err)=>{
           reject(err);
