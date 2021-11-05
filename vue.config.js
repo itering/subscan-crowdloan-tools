@@ -80,8 +80,8 @@ module.exports = {
     },
     proxy: {
       '^/api': {
-        target: 'https://kusama.webapi.subscan.io', // 接口的域名
-        // target: "https://polkadot.webapi.subscan.io/",
+        // target: 'https://kusama.webapi.subscan.io', // 接口的域名
+        target: "https://polkadot.webapi.subscan.io/",
         secure: false,
         changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
         pathRewrite: {

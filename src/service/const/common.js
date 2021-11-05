@@ -7,7 +7,9 @@ import bitcountry_icon from 'Assets/images/bitcountry-pioneer.png';
 import chainx_icon from 'Assets/images/chainx-rococo.svg';
 import calamari_icon from 'Assets/images/calamari.png';
 import crab_icon from 'Assets/images/crab-rococo.svg';
+import crust_icon from 'Assets/images/crust.png';
 import crust_shadow_icon from 'Assets/images/crust-shadow.svg';
+import darwinia_icon from 'Assets/images/darwinia.png';
 import encointer_notee_icon from 'Assets/images/encointer-notee-rococo.svg';
 import genshiro_icon from 'Assets/images/genshiro.svg';
 import integritee_icon from 'Assets/images/integritee.png';
@@ -199,7 +201,7 @@ export default [{
         },
         {
           info: 'genshiro',
-          paraId: 2089,
+          paraId: 2024,
           text: 'Genshiro',
           logo: genshiro_icon,
           pr: "https://github.com/itering/parachain-projects-info/pull/19",
@@ -474,13 +476,36 @@ export default [{
         },
       ],
       polkadot: [
-        // {
-        //   info: 'statemine',
-        //   paraId: 1000,
-        //   text: 'Statemine',
-        //   logo: statemint_icon,
-        //   subscan: "https://statemine.subscan.io/",
-        // },
+        {
+          info: 'statemint',
+          paraId: 1000,
+          logo: statemint_icon,
+          text: 'Statemint (Shell)',
+        },
+        {
+          info: 'bifrost',
+          paraId: 2001,
+          logo: bifrost_icon,
+          text: 'Bifrost',
+        },
+        {
+          info: 'crust',
+          paraId: 2002,
+          logo: crust_icon,
+          text: 'Crust',
+        },
+        {
+          info: 'darwinia',
+          paraId: 2003,
+          logo: darwinia_icon,
+          text: 'Darwinia',
+          subscan: "https://darwinia.subscan.io/",
+        },
+        {
+          info: 'parallel',
+          paraId: 2085,
+          text: 'Parallel',
+        }
       ],
     },
   }
