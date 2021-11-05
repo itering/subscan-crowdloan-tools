@@ -854,7 +854,7 @@ export default {
 }
 .contribute-wrapper {
   padding-bottom: 100px;
-  padding-top: 10px;
+  padding-top: 20px;
   .el-checkbox__label {
     display: none;
   }
