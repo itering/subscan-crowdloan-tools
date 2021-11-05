@@ -508,5 +508,9 @@ export default [{
         }
       ],
     },
+    sponsorList: {
+      kusama: [],
+      polkadot: ['2003'],
+    }
   }
 }]
