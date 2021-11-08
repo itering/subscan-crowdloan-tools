@@ -490,7 +490,7 @@ export default [{
         },
         {
           info: 'crust',
-          paraId: 2002,
+          paraId: 2008,
           logo: crust_icon,
           text: 'Crust',
         },
@@ -503,7 +503,7 @@ export default [{
         },
         {
           info: 'parallel',
-          paraId: 2085,
+          paraId: 2012,
           text: 'Parallel',
         }
       ],
