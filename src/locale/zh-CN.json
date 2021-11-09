@@ -16,9 +16,11 @@
   "call_data": "Call Data",
   "call_hash": "Call Hash",
   "cancel": "取消",
+  "charts.available": "可用",
   "contact_us": "联系我们",
   "contribute": {
     "add_memo": "添加备注",
+    "memo": "备注",
     "index": "贡献",
     "search": "Search for para id",
     "select": "请选择你要参与的众贷项目",
@@ -229,6 +231,7 @@
   "parameters": "参数",
   "pending_hash": "pending hash",
   "polkadot": {
+    "api_connecting": "正在连接 API",
     "connect": "连接到 polkadot{.js} 扩展程序",
     "connected": "Polkadot{.js} 已连接",
     "download": "下载 polkadot{.js} 扩展程序",

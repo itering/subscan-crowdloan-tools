@@ -1,82 +1,12 @@
 <template>
   <div id="app" :class="[sourceSelected]">
-    <navbar />
-    <main class="main">
-      <div v-if="!isPolkadotConnect" class="connect-section subscan-content">
-        <div class="subscan-container subscan-card">
-          <div class="connect">
-            <div class="loading-anime">
-              <ul>
-                <li id="a"></li>
-                <li id="b"></li>
-                <li id="c"></li>
-                <li id="d"></li>
-                <li id="e"></li>
-                <li id="f"></li>
-                <li id="g"></li>
-                <li id="h"></li>
-                <li id="i"></li>
-              </ul>
-            </div>
-            <h1>{{ $t("loading") }}</h1>
-            <div>{{ $t("polkadot.waiting") }}</div>
-            <div class="btns">
-              <div class="button" @click="initPolkadotJs">
-                {{ $t("polkadot.connect") }}
-              </div>
-            </div>
-          </div>
-          <div class="download">
-            <a target="_blank" :href="polkadotInstallLink">{{
-              $t("polkadot.download")
-            }}</a>
-          </div>
-          <el-dialog
-            class="downloadDialog"
-            title=""
-            :visible.sync="dialogVisible"
-            :width="getDialogWidth()"
-          >
-            <div class="title">{{ $t("error.index") }}</div>
-            <div class="text">{{ $t("polkadot.download_tip") }}</div>
-            <div class="btns">
-              <a class="button" target="_blank" :href="polkadotInstallLink">
-                {{ $t("polkadot.download") }}
-              </a>
-            </div>
-            <span slot="footer" class="dialog-footer"> </span>
-          </el-dialog>
-        </div>
-      </div>
-      <div v-else-if="!isKeyringLoaded" class="connect-section subscan-content">
-        <div class="subscan-container subscan-card">
-          <div class="connect">
-            <div class="loading-anime">
-              <ul>
-                <li id="a"></li>
-                <li id="b"></li>
-                <li id="c"></li>
-                <li id="d"></li>
-                <li id="e"></li>
-                <li id="f"></li>
-                <li id="g"></li>
-                <li id="h"></li>
-                <li id="i"></li>
-              </ul>
-            </div>
-            <h1>{{ $t("loading") }}</h1>
-          </div>
-        </div>
-      </div>
-      <router-view v-else />
-    </main>
-    <footer-bar class="footer-bar"></footer-bar>
+    <router-view />
   </div>
 </template>
 
 <script>
-import Navbar from "Views/Layout/Navbar";
-import FooterBar from "Views/Layout/FooterBar";
+// import Navbar from "Views/Layout/Navbar";
+// import FooterBar from "Views/Layout/FooterBar";
 import { web3Enable, isWeb3Injected } from "@polkadot/extension-dapp";
 const queryString = require("query-string");
 import { mapState } from "vuex";
@@ -85,8 +15,6 @@ import { isMobile } from "Utils/tools";
 export default {
   name: "App",
   components: {
-    navbar: Navbar,
-    footerBar: FooterBar,
   },
   data() {
     return {
@@ -107,7 +35,6 @@ export default {
     }),
   },
   beforeDestroy() {
-    this.websocketclose();
   },
   created() {
     // 接受路由中携带语言参数lang
@@ -122,8 +49,8 @@ export default {
       this.$store.dispatch("SetLanguage", language);
       this.$i18n.locale = language;
     }
-    this.detectNetwork();
-    this.init();
+    // this.detectNetwork();
+    // this.init();
   },
   mounted() {
     window.GLOBAL.vbus.$on("CHANGE_LANGUAGE", (language) => {

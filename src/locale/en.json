@@ -16,9 +16,11 @@
   "call_data": "Call Data",
   "call_hash": "Call Hash",
   "cancel": "Cancel",
+  "charts.available": "Available",
   "contact_us": "Contact Us",
   "contribute": {
     "add_memo": "Add Memo",
+    "memo": "Memo",
     "index": "Contribute",
     "search": "Search for para id",
     "select": "Please select the target crowdloan",
@@ -235,6 +237,7 @@
   "parameters": "Parameters",
   "pending_hash": "Pending Hash",
   "polkadot": {
+    "api_connecting": "Waiting for connection to API.",
     "connect": "Connect to polkadot{.js} extension",
     "connected": "Polkadot{.js} is connected",
     "download": "Download polkadot{.js} extension",
