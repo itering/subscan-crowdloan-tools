@@ -433,10 +433,6 @@ export default {
 }
 </style>
 <style lang="scss">
-header,
-footer {
-  display: none;
-}
 .el-select-dropdown {
   .account-box {
     a {
