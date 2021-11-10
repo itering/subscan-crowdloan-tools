@@ -20,13 +20,17 @@
   "contact_us": "Contact Us",
   "contribute": {
     "add_memo": "Add Memo",
+    "available": "Available",
     "memo": "Memo",
     "index": "Contribute",
+    "value": "Contribute Value",
     "search": "Search for para id",
     "select": "Please select the target crowdloan",
     "slogan": "Welcome to contribute to crowdloan through Subscan crowdloan tool!",
     "sponsor": "Sponsor",
-    "to_crowdloan": "Contribute to Crowdloan"
+    "to_crowdloan": "Contribute to Crowdloan",
+    "view": "View",
+    "source_code": "source code"
   },
   "copy_right": "Subscan © {year} - Developed by Subscan Team",
   "copy_success": "Copy Succeeded",
@@ -237,7 +241,7 @@
   "parameters": "Parameters",
   "pending_hash": "Pending Hash",
   "polkadot": {
-    "api_connecting": "Waiting for connection to API.",
+    "api_connecting": "Connecting",
     "connect": "Connect to polkadot{.js} extension",
     "connected": "Polkadot{.js} is connected",
     "download": "Download polkadot{.js} extension",

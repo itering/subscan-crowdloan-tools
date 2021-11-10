@@ -20,13 +20,17 @@
   "contact_us": "联系我们",
   "contribute": {
     "add_memo": "添加备注",
+    "available": "余额",
     "memo": "备注",
     "index": "贡献",
+    "value": "贡献数量",
     "search": "Search for para id",
     "select": "请选择你要参与的众贷项目",
     "slogan": "Subscan 众贷工具已上线，点击这里更加方便地参与众贷",
     "sponsor": "推广",
-    "to_crowdloan": "众贷贡献"
+    "to_crowdloan": "众贷贡献",
+    "view": "查看",
+    "source_code": "源码"
   },
   "copy_right": "Subscan © {year} - 由 Subscan 团队开发维护",
   "copy_success": "复制成功",
@@ -231,7 +235,7 @@
   "parameters": "参数",
   "pending_hash": "pending hash",
   "polkadot": {
-    "api_connecting": "正在连接 API",
+    "api_connecting": "正在连接",
     "connect": "连接到 polkadot{.js} 扩展程序",
     "connected": "Polkadot{.js} 已连接",
     "download": "下载 polkadot{.js} 扩展程序",

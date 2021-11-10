@@ -7,11 +7,9 @@
 <script>
 // import Navbar from "Views/Layout/Navbar";
 // import FooterBar from "Views/Layout/FooterBar";
-import { web3Enable, isWeb3Injected } from "@polkadot/extension-dapp";
 const queryString = require("query-string");
 import { mapState } from "vuex";
 import { NETWORK_LIST } from "Config";
-import { isMobile } from "Utils/tools";
 export default {
   name: "App",
   components: {
@@ -25,7 +23,6 @@ export default {
     };
   },
   watch: {
-    isKeyringLoaded: "getExtensionAccounts",
   },
   computed: {
     ...mapState({
@@ -49,8 +46,6 @@ export default {
       this.$store.dispatch("SetLanguage", language);
       this.$i18n.locale = language;
     }
-    // this.detectNetwork();
-    // this.init();
   },
   mounted() {
     window.GLOBAL.vbus.$on("CHANGE_LANGUAGE", (language) => {
@@ -59,285 +54,18 @@ export default {
     document.getElementsByTagName("body")[0].className = this.sourceSelected;
   },
   methods: {
-    isMobile,
     init() {
-      // this.initPolkadotJs();
-      // this.initParachain();
-      // this.getExtensionAccounts();
-    },
-    async initParachain() {
-      await this.getParachainMetaData();
-      await this.getCurrentAuction();
-    },
-    async getParachainMetaData() {
-      await Promise.all([this.$store.dispatch('SetParachainMetadata')]);
-    },
-    async getCurrentAuction() {
-      await Promise.all([this.$store.dispatch('SetCurrentAuction')]);
-    },
-    async getExtensionAccounts() {
-      this.$store.dispatch("SetExtensionAccountList").then(() => {
-        if (isWeb3Injected) {
-          this.$store.dispatch("SetIsPolkadotConnect", true);
-        }
-      });
     },
     detectNetwork() {
       const parsedObj = queryString.parse(location.search);
       const networkParam = parsedObj["network"] || "polkadot";
       this.$store.dispatch("SetSourceSelected", networkParam);
     },
-    getDialogWidth() {
-      if (this.isMobile()) {
-        return "290px";
-      } else {
-        return "560px";
-      }
-    },
-    async initChainState() {
-      const chainState = await this.$polkaApi.rpc.system.properties();
-      this.$store.commit("SET_CHAIN_TOKEN", chainState.toJSON());
-    },
-    async initPolkadotJs() {
-      this.isLoading = true;
-      const extensions = await web3Enable("subscan");
-      this.isLoading = false;
-      if (extensions.length === 0) {
-        this.dialogVisible = true;
-        return;
-      }
-    },
   },
 };
 </script>
 <style lang='scss' scoped>
 .main {
-  // display: flex;
-}
-.connect-section {
-  display: flex;
-  flex: 1 1 auto;
-  @mixin place($n, $t, $l) {
-    animation: $n 1s ease-in-out infinite;
-    top: $t;
-    left: $l;
-  }
-  .subscan-card {
-    position: relative;
-    min-height: 500px;
-    // flex: 1 1 500px;
-  }
-  .connect {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    h1 {
-      text-align: center;
-      font-size: 20px;
-      font-weight: 600;
-      margin: 50px 0;
-    }
-    .btns {
-      display: flex;
-      justify-content: center;
-    }
-    .button {
-      cursor: pointer;
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 50px;
-      background: #302b3c;
-      border-radius: 2px;
-      color: #fff;
-    }
-    > div {
-      text-align: center;
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 20px;
-    }
-  }
-  .download {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    a {
-      color: var(--link-color);
-      font-size: 14px;
-    }
-  }
-  .loading-anime {
-    position: relative;
-    height: 80px;
-    //https://codepen.io/hynden/pen/nyblr
-    ul {
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, 0);
-      transform: rotate(45deg);
-    }
-    li {
-      list-style-type: none;
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      width: 20px;
-      height: 20px;
-      background: var(--main-color);
-      border-radius: 50%;
-    }
-    #a {
-      @include place(a, -40px, -40px);
-    }
-    #b {
-      @include place(b, -40px, 0px);
-    }
-    #c {
-      @include place(c, -40px, 40px);
-    }
-    #d {
-      @include place(d, 0px, -40px);
-    }
-    #e {
-      @include place(e, 0px, 0px);
-    }
-    #f {
-      @include place(f, 0px, 40px);
-    }
-    #g {
-      @include place(g, 40px, -40px);
-    }
-    #h {
-      @include place(h, 40px, 0px);
-    }
-    #i {
-      @include place(i, 40px, 40px);
-    }
-
-    @keyframes a {
-      50% {
-        top: 0px;
-        left: -40px;
-      }
-      100% {
-        top: 0px;
-        left: -40px;
-      }
-    }
-    @keyframes b {
-      50% {
-        top: -40px;
-        left: -40px;
-      }
-      100% {
-        top: -40px;
-        left: -40px;
-      }
-    }
-    @keyframes c {
-      50% {
-        top: -40px;
-        left: 0px;
-      }
-      100% {
-        top: -40px;
-        left: 0px;
-      }
-    }
-    @keyframes d {
-      50% {
-        top: 40px;
-        left: -40px;
-      }
-      100% {
-        top: 40px;
-        left: -40px;
-      }
-    }
-    @keyframes f {
-      50% {
-        top: -40px;
-        left: 40px;
-      }
-      100% {
-        top: -40px;
-        left: 40px;
-      }
-    }
-    @keyframes g {
-      50% {
-        top: 40px;
-        left: 0px;
-      }
-      100% {
-        top: 40px;
-        left: 0px;
-      }
-    }
-    @keyframes h {
-      50% {
-        top: 40px;
-        left: 40px;
-      }
-      100% {
-        top: 40px;
-        left: 40px;
-      }
-    }
-    @keyframes i {
-      50% {
-        top: 0px;
-        left: 40px;
-      }
-      100% {
-        top: 0px;
-        left: 40px;
-      }
-    }
-  }
-  .downloadDialog {
-    .title {
-      font-size: 20px;
-      font-weight: 600;
-      line-height: 26px;
-      text-align: center;
-      color: var(--black-color);
-    }
-    .text {
-      font-size: 14px;
-      font-weight: 600;
-      margin: 20px 0;
-      word-break: normal;
-      text-align: center;
-      color: var(--black-color);
-    }
-    .btns {
-      display: flex;
-      justify-content: center;
-    }
-    .button {
-      cursor: pointer;
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 50px;
-      background: #302b3c;
-      border-radius: 2px;
-      color: #fff;
-    }
-  }
-  @media screen and (max-width:$screen-xs) {
-    .download {
-      display: none;
-    }
-    .connect {
-      padding-top: 40px;
-    }
-    .subscan-card {
-      flex: 1;
-    }
-  }
 }
 </style>
 <style lang="scss">
