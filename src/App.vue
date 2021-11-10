@@ -61,8 +61,8 @@ export default {
   methods: {
     isMobile,
     init() {
-      this.initPolkadotJs();
-      this.initParachain();
+      // this.initPolkadotJs();
+      // this.initParachain();
       // this.getExtensionAccounts();
     },
     async initParachain() {
@@ -100,7 +100,7 @@ export default {
     },
     async initPolkadotJs() {
       this.isLoading = true;
-      const extensions = await web3Enable("subscan-tools");
+      const extensions = await web3Enable("subscan");
       this.isLoading = false;
       if (extensions.length === 0) {
         this.dialogVisible = true;

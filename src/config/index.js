@@ -67,7 +67,7 @@ export const NETWORK_LIST = [
 
 export const ENDPOINTS_MAP = {
   polkadot: {
-    wss: "wss://rpc.polkadot.io",
+    wss: "wss://pub.elara.patract.io/polkadot",
     prefix: 0,
     types: {},
     api: {
