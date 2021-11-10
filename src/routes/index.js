@@ -5,9 +5,9 @@ export default [{
       import( /* webpackChunkName: "home" */ "Views/Crowdloan/index")
   },
   {
-    name: "crowdloan",
-    path: "/crowdloan",
-    component: () => import( /* webpackChunkName: "crowdloan" */ "Views/Crowdloan/index")
+    name: "contribute",
+    path: "/contribute",
+    component: () => import( /* webpackChunkName: "contribute" */ "Views/Crowdloan/index")
   },
   {
     name: "404",
