@@ -71,7 +71,7 @@
             </el-form-item>
           </el-form>
           <div class="action-btns">
-            <el-button class="button black-btn" @click.stop="submitContribute" :loading="isContributeLoading">{{
+            <el-button :disabled="!(isApiReady && hasExtentionAccount)" class="button black-btn" @click.stop="submitContribute" :loading="isContributeLoading">{{
               $t('contribute.index')
             }}</el-button>
           </div>
@@ -311,6 +311,13 @@ export default {
       color: #fff;
       font-weight: bold;
       font-size: 14px;
+      &.is-disabled {
+        color: #FBFBFB;
+        cursor: not-allowed;
+        background-image: none;
+        background-color: #D8D8D8;
+        border-color: #D8D8D8;
+      }
     }
     .connect-btn {
       padding: 8px 22px;
@@ -398,6 +405,7 @@ export default {
     }
     .github {
       margin-top: 12px;
+      margin-right: 3px;
       text-align: right;
       .github-pr-btn {
         display: inline-flex;
