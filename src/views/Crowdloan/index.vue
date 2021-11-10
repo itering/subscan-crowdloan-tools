@@ -167,7 +167,7 @@ export default {
     };
   },
   created() {
-    this.initPolkaApi();
+    // this.initPolkaApi();
     // this.initPolkadotJs();
   },
 
