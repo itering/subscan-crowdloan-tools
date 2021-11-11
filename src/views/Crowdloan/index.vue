@@ -57,9 +57,10 @@
           {{ $t('polkadot.connect') }}
         </el-button>
         <div class="form-section">
-          <el-form :model="form" ref="contributeForm" label-position="top" class="contribute-form">
+          <el-form :model="form" ref="contributeForm" label-position="top" class="contribute-form" @submit.native.prevent>
             <el-form-item :label="$t('contribute.value')" :label-width="formLabelWidth">
-              <el-input v-model="form.contributeAmount">
+              <el-input v-model="form.contributeAmount"
+                @keyup.enter.native="submitContribute">
                 <template slot="append">{{ tokenSymbol }}</template>
               </el-input>
             </el-form-item>
@@ -67,7 +68,7 @@
               <el-switch v-model="form.hasMemo" :inactive-text="$t('contribute.add_memo')"> </el-switch>
             </div>
             <el-form-item v-if="form.hasMemo" :label="$t('contribute.memo')" :label-width="formLabelWidth">
-              <el-input v-model="form.memo" autocomplete="off"></el-input>
+              <el-input v-model="form.memo" autocomplete="off" @keyup.enter.native="submitContribute"></el-input>
             </el-form-item>
           </el-form>
           <div class="action-btns">
@@ -338,6 +339,7 @@ export default {
           align-items: center;
           font-size: 14px;
           a {
+            color: var(--main-color);
             pointer-events: none;
           }
           .icon {
@@ -444,6 +446,7 @@ export default {
 .el-select-dropdown {
   .account-box {
     a {
+      color: var(--main-color);
       pointer-events: none;
     }
   }
