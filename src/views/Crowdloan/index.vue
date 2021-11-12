@@ -262,32 +262,38 @@ export default {
           tx = this.polkaApi.tx.utility.batchAll(txs);
         }
         let unsub = await tx.signAndSend(this.signer, ({ events = [], status }) => {
-          // if (status.isFinalized) {
-          events.forEach(({ event: { method, section } }) => {
-            if (method === 'ExtrinsicSuccess' && section === 'system') {
-              self.$notify({
-                title: this.$t('transaction_success_title'),
-                message: this.$t('transaction_success_content'),
-                type: 'success',
-              });
-              if (status.isFinalized) {
-                unsub && unsub();
+          if (status.isInBlock) {
+            events.forEach(({ event: { method, section } }) => {
+              if (method === 'ExtrinsicSuccess' && section === 'system') {
+                self.$notify({
+                  title: this.$t('transaction_success_title'),
+                  message: this.$t('transaction_success_content'),
+                  type: 'success',
+                });
+                if (status.isFinalized) {
+                  unsub && unsub();
+                }
+                this.isContributeLoading = false;
               }
-              this.isContributeLoading = false;
-            }
-            if (method === 'ExtrinsicFailed' && section === 'system') {
-              self.$notify({
-                title: this.$t('transaction_failed_title'),
-                message: this.$t('transaction_failed_content'),
-                type: 'error',
-              });
-              this.isContributeLoading = false;
-            }
-          });
+              if (method === 'ExtrinsicFailed' && section === 'system') {
+                self.$notify({
+                  title: this.$t('transaction_failed_title'),
+                  message: this.$t('transaction_failed_content'),
+                  type: 'error',
+                });
+                this.isContributeLoading = false;
+              }
+            });
+          }
           // }
         });
       } catch (e) {
         console.log(e);
+        self.$notify({
+          title: this.$t('transaction_failed_title'),
+          message: e,
+          type: 'error',
+        });
         this.isContributeLoading = false;
       }
     },
