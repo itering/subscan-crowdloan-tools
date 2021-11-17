@@ -64,6 +64,9 @@
                 <template slot="append">{{ tokenSymbol }}</template>
               </el-input>
             </el-form-item>
+            <el-form-item v-if="hasSignature" :label="$t('contribute.signature')" :label-width="formLabelWidth">
+              <el-input v-model="form.signature" autocomplete="off" @keyup.enter.native="submitContribute"></el-input>
+            </el-form-item>
             <div class="memo-switch">
               <el-switch v-model="form.hasMemo" :inactive-text="$t('contribute.add_memo')"> </el-switch>
             </div>
@@ -151,8 +154,10 @@ export default {
         tokenDecimals: [],
         tokenSymbol: [],
       },
+      hasSignature: false,
       form: {
         hasMemo: false,
+        signature: '',
         memo: '',
         contributeAmount: '',
       },
@@ -168,6 +173,7 @@ export default {
     };
   },
   created() {
+    this.checkSignature();
     // this.initPolkaApi();
     // this.initPolkadotJs();
   },
@@ -177,6 +183,13 @@ export default {
   methods: {
     accuracyFormat,
     fmtNumber4Digits,
+    checkSignature() {
+      let signatureConfig = this.$const['COMMON/networkList']['hasSignature'];
+      let networkSignatureList = signatureConfig && signatureConfig[this.network];
+      if (networkSignatureList && networkSignatureList.indexOf(this.paraId) > -1) {
+        this.hasSignature = true;
+      }
+    },
     async initPolkaApi() {
       this.isLoading = true;
       const provider = new WsProvider(this.networkConfig[this.network]['wss']);
@@ -246,17 +259,23 @@ export default {
     async submitContribute() {
       this.isContributeLoading = true;
       let self = this;
+      let signature = null;
+      if (this.hasSignature) {
+        signature = {
+          "Sr25519": this.form.signature
+        };
+      }
       try {
         const injector = await web3FromAddress(this.signer);
         this.polkaApi.setSigner(injector.signer);
         let tx = this.polkaApi.tx.crowdloan.contribute(
           this.paraId,
           this.inputToKSMBN(this.form.contributeAmount),
-          null
+          signature
         );
         if (this.form.hasMemo && this.form.memo) {
           let txs = [
-            this.polkaApi.tx.crowdloan.contribute(this.paraId, this.inputToKSMBN(this.form.contributeAmount), null),
+            this.polkaApi.tx.crowdloan.contribute(this.paraId, this.inputToKSMBN(this.form.contributeAmount), signature),
             this.polkaApi.tx.crowdloan.addMemo(this.paraId, this.form.memo),
           ];
           tx = this.polkaApi.tx.utility.batchAll(txs);
