@@ -21,6 +21,7 @@
   "contribute": {
     "add_memo": "添加备注",
     "available": "余额",
+    "contributed": "已贡献",
     "memo": "备注",
     "index": "贡献",
     "value": "贡献数量",

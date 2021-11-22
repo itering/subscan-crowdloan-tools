@@ -34,6 +34,14 @@ export default [
     options: {},
   },
   {
+    name: 'getParachainContributes',
+    method: 'POST',
+    desc: '根据funder_index获取parachain的contributes信息',
+    baseURL: '',
+    path: '/scan/parachain/contributes',
+    options: {},
+  },
+  {
     name: 'getParachainAuctions',
     method: 'POST',
     desc: '获取parachain的auctions信息(1:Started;2:Closed)',

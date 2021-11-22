@@ -21,6 +21,7 @@
                       <address-display
                         customCls="address-display-cls"
                         :hasAddressWrapper="true"
+                        :hasHashFormat="isMobile"
                         :isVertical="true"
                         :iconSize="30"
                         :address="item.address"
@@ -45,22 +46,33 @@
               </div>
               <div class="amount-section">
                 <span class="available-amount">{{ amountPlaceholder }}</span>
+                <span class="contributed-amount">{{ contributedPlaceholder }}</span>
               </div>
             </div>
             <!-- <span class="available-amount" v-if="signer">{{ amountPlaceholder }}</span> -->
           </div>
         </div>
-        <el-button v-else-if="isLoading" :loading="isLoading" class="button black-btn connect-btn" @click="initPolkaApi">
+        <el-button
+          v-else-if="isLoading"
+          :loading="isLoading"
+          class="button black-btn connect-btn"
+          @click="initPolkaApi"
+        >
           {{ $t('polkadot.api_connecting') }}
         </el-button>
         <el-button v-else class="button black-btn connect-btn" @click="initPolkaApi">
           {{ $t('polkadot.connect') }}
         </el-button>
         <div class="form-section">
-          <el-form :model="form" ref="contributeForm" label-position="top" class="contribute-form" @submit.native.prevent>
+          <el-form
+            :model="form"
+            ref="contributeForm"
+            label-position="top"
+            class="contribute-form"
+            @submit.native.prevent
+          >
             <el-form-item :label="$t('contribute.value')" :label-width="formLabelWidth">
-              <el-input v-model="form.contributeAmount"
-                @keyup.enter.native="submitContribute">
+              <el-input v-model="form.contributeAmount" @keyup.enter.native="submitContribute">
                 <template slot="append">{{ tokenSymbol }}</template>
               </el-input>
             </el-form-item>
@@ -75,9 +87,13 @@
             </el-form-item>
           </el-form>
           <div class="action-btns">
-            <el-button :disabled="!(isApiReady && hasExtentionAccount)" class="button black-btn" @click.stop="submitContribute" :loading="isContributeLoading">{{
-              $t('contribute.index')
-            }}</el-button>
+            <el-button
+              :disabled="!(isApiReady && hasExtentionAccount)"
+              class="button black-btn"
+              @click.stop="submitContribute"
+              :loading="isContributeLoading"
+              >{{ $t('contribute.index') }}</el-button
+            >
           </div>
         </div>
         <div class="github">
@@ -96,6 +112,7 @@
 import Identicon from '@polkadot/vue-identicon';
 import { fmtNumber4Digits } from 'Utils/format';
 import { accuracyFormat } from 'Utils/filters';
+import { isMobile } from "Utils/tools";
 import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
 import { encodeAddress } from '@polkadot/util-crypto';
 import { ApiPromise, WsProvider } from '@polkadot/api';
@@ -107,7 +124,7 @@ export default {
   name: 'CrowdloanContribute',
   components: {
     AddressDisplay,
-    Identicon
+    Identicon,
   },
   props: {},
   computed: {
@@ -121,6 +138,9 @@ export default {
     paraId() {
       return this.$route.query.paraId || '';
     },
+    fundId() {
+      return this.$route.query.fundId || '';
+    },
     network() {
       return this.$route.query.network || 'polkadot';
     },
@@ -129,6 +149,16 @@ export default {
     },
     tokenDecimal() {
       return (this.chainState.tokenDecimals && this.chainState.tokenDecimals[0]) || '';
+    },
+    isMobile() {
+      return isMobile();
+    },
+    contributedPlaceholder() {
+      let result = '';
+      if (this.contributedAmount) {
+        result = this.$t('contribute.contributed') + ': ' + this.contributedAmount + ' ' + this.tokenSymbol;
+      }
+      return result;
     },
     amountPlaceholder() {
       let result = '0';
@@ -145,6 +175,7 @@ export default {
     return {
       extentionList: [],
       signer: '',
+      contributedAmount: '',
       polkaApi: null,
       isApiReady: false,
       isLoading: false,
@@ -216,12 +247,31 @@ export default {
       this.extentionList = allAccounts;
       if (allAccounts && allAccounts.length > 0) {
         let signer = allAccounts[0].address || '';
-        this.signer = signer;
+        this.changeSigner(signer);
       }
       this.isLoading = false;
       this.getAccountBalance();
     },
-
+    async getSignerContribute() {
+      this.contributedAmount = '';
+      const data = await this.$api['polkaGetParachainContributes']({
+        row: 100,
+        page: 0,
+        who: this.signer,
+        para_id: +this.paraId
+      }).catch(() => {});
+      if (data && data.count > 0) {
+        _.forEach(data.contributes, (contribute) => {
+          if (contribute.fund_id === this.fundId) {
+            let amount = fmtNumber4Digits(
+              accuracyFormat(contribute.contributed, this.chainState.tokenDecimals && this.chainState.tokenDecimals[0]),
+              4
+            );
+            this.contributedAmount = amount;
+          }
+        });
+      }
+    },
     getAccountBalance() {
       let addressList = _.map(this.extentionList, 'address');
       this.polkaApi.query.system.account.multi(addressList, (balances) => {
@@ -235,6 +285,7 @@ export default {
     },
     changeSigner(signer) {
       this.signer = signer;
+      this.getSignerContribute();
     },
     selectExtensionAccount() {
       this.$refs['extensionAccountSelect'].toggleMenu();
@@ -262,7 +313,7 @@ export default {
       let signature = null;
       if (this.hasSignature) {
         signature = {
-          "Sr25519": this.form.signature
+          Sr25519: this.form.signature,
         };
       }
       try {
@@ -275,7 +326,11 @@ export default {
         );
         if (this.form.hasMemo && this.form.memo) {
           let txs = [
-            this.polkaApi.tx.crowdloan.contribute(this.paraId, this.inputToKSMBN(this.form.contributeAmount), signature),
+            this.polkaApi.tx.crowdloan.contribute(
+              this.paraId,
+              this.inputToKSMBN(this.form.contributeAmount),
+              signature
+            ),
             this.polkaApi.tx.crowdloan.addMemo(this.paraId, this.form.memo),
           ];
           tx = this.polkaApi.tx.utility.batchAll(txs);
@@ -338,11 +393,11 @@ export default {
       font-weight: bold;
       font-size: 14px;
       &.is-disabled {
-        color: #FBFBFB;
+        color: #fbfbfb;
         cursor: not-allowed;
         background-image: none;
-        background-color: #D8D8D8;
-        border-color: #D8D8D8;
+        background-color: #d8d8d8;
+        border-color: #d8d8d8;
       }
     }
     .connect-btn {
@@ -393,6 +448,11 @@ export default {
       }
       .detail-section {
         margin-left: 10px;
+      }
+      .amount-section {
+        .contributed-amount {
+          margin-left: 20px;
+        }
       }
     }
     .form-section {
