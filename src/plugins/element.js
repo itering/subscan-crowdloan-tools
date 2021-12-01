@@ -59,7 +59,7 @@ import {
 // 按需引入element-ui的部分功能
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;
-// Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;

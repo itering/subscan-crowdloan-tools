@@ -510,6 +510,18 @@ export default [{
     },
     hasSignature: {
       polkadot: ['2004']
+    },
+    referralLinks: {
+      polkadot: {
+        //darwinia
+        '2003': 'aa8a67000d39e4f9e31adbd93507ef424d85cf51ec58a415f329b0691741057e',
+        //astar
+        '2006': '0xaa8a67000d39e4f9e31adbd93507ef424d85cf51ec58a415f329b0691741057e',
+        //parallel
+        '2012': 'aa8a67000d39e4f9e31adbd93507ef424d85cf51ec58a415f329b0691741057e',
+        //manta
+        '2015': '0xaa8a67000d39e4f9e31adbd93507ef424d85cf51ec58a415f329b0691741057e'
+      }
     }
   }
 }]

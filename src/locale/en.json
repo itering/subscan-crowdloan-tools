@@ -21,6 +21,7 @@
   "contribute": {
     "add_memo": "Add Memo",
     "available": "Available",
+    "check_extrinsic": "You can check extrinsic index: ",
     "contributed": "Contributed",
     "memo": "Memo",
     "index": "Contribute",
@@ -32,7 +33,9 @@
     "sponsor": "Sponsor",
     "to_crowdloan": "Contribute to Crowdloan",
     "view": "View",
-    "source_code": "source code"
+    "source_code": "source code",
+    "subscan_referral": "Use Subscan Referral Code",
+    "success": "Contribution Success"
   },
   "copy_right": "Subscan © {year} - Developed by Subscan Team",
   "copy_success": "Copy Succeeded",

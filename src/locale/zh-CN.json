@@ -21,6 +21,7 @@
   "contribute": {
     "add_memo": "添加备注",
     "available": "余额",
+    "check_extrinsic": "交易ID: ",
     "contributed": "已贡献",
     "memo": "备注",
     "index": "贡献",
@@ -32,7 +33,10 @@
     "sponsor": "推广",
     "to_crowdloan": "众贷贡献",
     "view": "查看",
-    "source_code": "源码"
+    "source_code": "源码",
+    "subscan_referral": "使用 Subscan 推荐码",
+    "success": "贡献成功"
+
   },
   "copy_right": "Subscan © {year} - 由 Subscan 团队开发维护",
   "copy_success": "复制成功",

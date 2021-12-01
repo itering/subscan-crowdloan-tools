@@ -79,12 +79,17 @@
             <el-form-item v-if="hasSignature" :label="$t('contribute.signature')" :label-width="formLabelWidth">
               <el-input v-model="form.signature" autocomplete="off" @keyup.enter.native="submitContribute"></el-input>
             </el-form-item>
-            <div class="memo-switch">
-              <el-switch v-model="form.hasMemo" :inactive-text="$t('contribute.add_memo')"> </el-switch>
+            <div class="memo-switch" v-if="referralLink">
+              <el-switch v-model="form.hasMemo" :inactive-text="$t('contribute.subscan_referral')"> </el-switch>
             </div>
-            <el-form-item v-if="form.hasMemo" :label="$t('contribute.memo')" :label-width="formLabelWidth">
-              <el-input v-model="form.memo" autocomplete="off" @keyup.enter.native="submitContribute"></el-input>
-            </el-form-item>
+            <template v-else>
+              <div class="memo-switch">
+                <el-switch v-model="form.hasMemo" :inactive-text="$t('contribute.add_memo')"> </el-switch>
+              </div>
+              <el-form-item v-if="form.hasMemo" :label="$t('contribute.memo')" :label-width="formLabelWidth">
+                <el-input v-model="form.memo" autocomplete="off" @keyup.enter.native="submitContribute"></el-input>
+              </el-form-item>
+            </template>
           </el-form>
           <div class="action-btns">
             <el-button
@@ -153,6 +158,15 @@ export default {
     isMobile() {
       return isMobile();
     },
+    referralLink() {
+      let result = '';
+      let referralConfig = this.$const['COMMON/networkList']['referralLinks'];
+      let networkReferralConfig = referralConfig && referralConfig[this.network];
+      if (networkReferralConfig) {
+        result = networkReferralConfig[this.paraId];
+      }
+      return result;
+    },
     contributedPlaceholder() {
       let result = '';
       if (this.contributedAmount) {
@@ -194,7 +208,7 @@ export default {
       },
       networkConfig: {
         polkadot: {
-          wss: 'wss://pub.elara.patract.io/polkadot',
+          wss: 'wss://rpc.polkadot.io/',
         },
         kusama: {
           wss: 'wss://kusama-rpc.polkadot.io',
@@ -219,6 +233,9 @@ export default {
       let networkSignatureList = signatureConfig && signatureConfig[this.network];
       if (networkSignatureList && networkSignatureList.indexOf(this.paraId) > -1) {
         this.hasSignature = true;
+      }
+      if (this.referralLink) {
+        this.form.hasMemo = true;
       }
     },
     async initPolkaApi() {
@@ -324,14 +341,15 @@ export default {
           this.inputToKSMBN(this.form.contributeAmount),
           signature
         );
-        if (this.form.hasMemo && this.form.memo) {
+        let memo = this.form.memo || this.referralLink;
+        if (this.form.hasMemo && memo) {
           let txs = [
             this.polkaApi.tx.crowdloan.contribute(
               this.paraId,
               this.inputToKSMBN(this.form.contributeAmount),
               signature
             ),
-            this.polkaApi.tx.crowdloan.addMemo(this.paraId, this.form.memo),
+            this.polkaApi.tx.crowdloan.addMemo(this.paraId, memo),
           ];
           tx = this.polkaApi.tx.utility.batchAll(txs);
         }
