@@ -124,11 +124,14 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import Bignumber from 'bignumber.js';
 import BN from 'bn.js';
 import AddressDisplay from '@/views/Components/AddressDisplay';
+import LinkWrapper from '@/views/Components/LinkWrapper';
 import _ from 'lodash';
 export default {
   name: 'CrowdloanContribute',
   components: {
     AddressDisplay,
+    // eslint-disable-next-line vue/no-unused-components
+    LinkWrapper,
     Identicon,
   },
   props: {},
@@ -353,25 +356,56 @@ export default {
           ];
           tx = this.polkaApi.tx.utility.batchAll(txs);
         }
-        let unsub = await tx.signAndSend(this.signer, ({ events = [], status }) => {
+        let unsub = await tx.signAndSend(this.signer, async ({ events = [], status }) => {
           if (status.isInBlock) {
+            let block = await this.polkaApi.rpc.chain.getBlock(status.asInBlock);
+            let extrinsics = block['block']['extrinsics'];
+            let height = block['block']['header']['number'];
+            let extrinsicIndex = '';
             events.forEach(({ event: { method, section } }) => {
               if (method === 'ExtrinsicSuccess' && section === 'system') {
-                self.$notify({
-                  title: this.$t('transaction_success_title'),
-                  message: this.$t('transaction_success_content'),
-                  type: 'success',
-                });
+                _.forEach(extrinsics,  (extrinsic, idx)=>{
+                  if (tx.signature && (extrinsic.signature.toHex() === tx.signature.toHex())) {
+                    extrinsicIndex = height.toString() + '-' + idx;
+                    return false;
+                  }
+                })
+                if (extrinsicIndex) {
+                  const h = this.$createElement;
+                  self.$msgbox({
+                    title: this.$t('contribute.success'),
+                    confirmButtonText: this.$t('ok'),
+                    center: true,
+                    showClose: false,
+                    confirmButtonClass: 'black-btn',
+                    message: h('p', null, [
+                      h('span', null, this.$t('contribute.check_extrinsic')),
+                      h(LinkWrapper, {props: {text: extrinsicIndex, href: `https://${this.network}.subscan.io/extrinsic/${extrinsicIndex}`}})
+                    ]),
+                  });
+                } else {
+                  self.$msgbox({
+                    title: this.$t('contribute.success'),
+                    confirmButtonText: this.$t('ok'),
+                    center: true,
+                    showClose: false,
+                    confirmButtonClass: 'black-btn',
+                    message: this.$t('transaction_success_content')
+                  });
+                }
                 if (status.isFinalized) {
                   unsub && unsub();
                 }
                 this.isContributeLoading = false;
               }
               if (method === 'ExtrinsicFailed' && section === 'system') {
-                self.$notify({
+                self.$msgbox({
                   title: this.$t('transaction_failed_title'),
+                  confirmButtonText: this.$t('ok'),
+                  center: true,
+                  showClose: false,
+                  confirmButtonClass: 'black-btn',
                   message: this.$t('transaction_failed_content'),
-                  type: 'error',
                 });
                 this.isContributeLoading = false;
               }
@@ -381,10 +415,13 @@ export default {
         });
       } catch (e) {
         console.log(e);
-        self.$notify({
+        self.$msgbox({
           title: this.$t('transaction_failed_title'),
+          confirmButtonText: this.$t('ok'),
+          center: true,
+          showClose: false,
+          confirmButtonClass: 'black-btn',
           message: e,
-          type: 'error',
         });
         this.isContributeLoading = false;
       }
@@ -558,5 +595,43 @@ export default {
   height: auto;
   line-height: auto;
   padding: 5px 20px;
+}
+.el-message-box {
+  .el-message-box__title {
+    color: var(--black-color);
+    font-weight: bold;
+  }
+  .el-message-box__content {
+    color: var(--black-color);
+    font-weight: bold;
+  }
+  .black-btn {
+    cursor: pointer;
+    background: var(--main-button-color);
+    border-color: var(--main-button-color);
+    border-radius: 2px;
+    color: var(--white);
+    transition: opacity 0.1s;
+    padding: 9px 50px;
+    font-weight: bold;
+    &:hover {
+      opacity: 0.8;
+    }
+    &:active {
+      opacity: 1;
+    }
+    &.is-disabled {
+      color: #FBFBFB;
+      cursor: not-allowed;
+      background-image: none;
+      background-color: #D8D8D8;
+      border-color: #D8D8D8;
+    }
+  }
+}
+@media screen and (max-width: $screen-xs) {
+  .el-message-box {
+    width: 300px;
+  }
 }
 </style>
