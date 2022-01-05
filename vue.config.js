@@ -69,7 +69,7 @@ module.exports = {
     loaderOptions: {
       // 给 sass-loader 传递选项
       sass: {
-        data: `@import "@/assets/style/global.scss";`
+        additionalData: `@import "@/assets/style/global.scss";`
       }
     }
   },

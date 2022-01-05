@@ -491,7 +491,7 @@ export default {
         .signer-account {
           display: flex;
           align-items: center;
-          /deep/ a {
+          ::v-deep a {
             pointer-events: none;
             color: var(--white);
           }
@@ -744,7 +744,7 @@ export default {
       margin-left: 30px;
       text-align: left;
     }
-    /deep/ .el-collapse {
+    ::v-deep .el-collapse {
       border: none;
       padding-left: 30px;
       .item {
@@ -968,7 +968,7 @@ export default {
       padding: 0 10px;
     }
   }
-  /deep/ .el-collapse {
+  ::v-deep .el-collapse {
     .el-collapse-item__content {
       max-height: 200px;
       overflow: scroll;
