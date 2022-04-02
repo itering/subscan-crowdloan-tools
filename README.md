@@ -1,4 +1,4 @@
-# Subscan Tools for Crowdloan
+# Subscan Tool for Crowdloan
 
 ## Build Setup
 
